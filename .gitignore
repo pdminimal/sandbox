@@ -1,3 +1,7 @@
 sandbox
 .vscode
 *.txt
+node_modules
+build
+dist
+.cache
