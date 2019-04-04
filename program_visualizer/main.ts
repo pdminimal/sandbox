@@ -9,8 +9,7 @@ export class Parser {
     this.stack = [];
   }
 
-  step() {
-  }
+  step() {}
 }
 
 const binarySearch = `
@@ -33,5 +32,9 @@ def binary_search(a, val):
 binary_search([-5, 1, 3, 4, 5, 7, 18, 19], 7)
 `;
 
-const src = document.getElementById('src')!;
-src.textContent = binarySearch;
+export const main = () => {
+  const src = document.getElementById('src');
+  if (src) {
+    src.textContent = binarySearch;
+  }
+};

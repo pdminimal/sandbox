@@ -3,9 +3,12 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "build",
-    "lib": ["dom"]
+    "lib": ["es2016", "dom"]
   },
   "include": [
     "**/*.ts"
+  ],
+  "exclude": [
+    "build"
   ]
 }
