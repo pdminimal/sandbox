@@ -2,6 +2,13 @@
 
 Experiments.
 
+## Text Segmentation
+It is an experimental implementation of my text segmentation algorithm without grammar knowledge.
+
+## Program visualizer
+It is aiming to visualize the runtime process of python, including the implementation of the interpreter.
+
+
 ## License
 Zero-Clause BSD
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted.
