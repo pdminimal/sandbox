@@ -23,8 +23,8 @@ test('def: funcname', () => {
   }
   expect(interpreter.cursor).toBe(8);
   expect(interpreter.precedenceTokens).toEqual([]);
-  expect(interpreter.funcDefs.length).toEqual(1);
-  expect(interpreter.funcDefs[0].name).toEqual('bin');
+  expect(interpreter.funcdefs.length).toEqual(1);
+  expect(interpreter.funcdefs[0].name).toEqual('bin');
 });
 
 test('def:read many spaces between def and funcname', () => {
@@ -45,6 +45,13 @@ test('def:read many spaces between def and funcname', () => {
   }
   expect(interpreter.cursor).toBe(9);
   expect(interpreter.precedenceTokens).toEqual([]);
-  expect(interpreter.funcDefs.length).toEqual(1);
-  expect(interpreter.funcDefs[0].name).toEqual('bin');
+  expect(interpreter.funcdefs.length).toEqual(1);
+  expect(interpreter.funcdefs[0].name).toEqual('bin');
+});
+
+test('unexpedted end', () => {
+  const interpreter = new Interpreter('a');
+  interpreter.step();
+
+  expect(() => interpreter.step()).toThrow(/end/);
 });

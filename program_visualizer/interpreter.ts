@@ -1,19 +1,16 @@
 
 class Rule {
   pattern: string|RegExp;
-  action: null|((nextInput: string) => void);
-  childRules: null|Rule[];
+  action: (nextInput: string) => null | Rule[];
 
   constructor(
-      pattern: string|RegExp, action: null|((nextInput: string) => void) = null,
-      childRules: null|Rule[] = null) {
+      pattern: string|RegExp, action: (nextInput: string) => null | Rule[]) {
     this.pattern = pattern;
     this.action = action;
-    this.childRules = childRules;
   }
 }
 
-class FuncDef {
+class Funcdef {
   name = '';
   args: string[] = [];
   body = '';
@@ -27,7 +24,7 @@ export class Interpreter {
   curName = '';
   precedenceTokens: string[] = [];
   callStack: Rule[][];
-  funcDefs: FuncDef[] = [];
+  funcdefs: Funcdef[] = [];
 
   constructor(src: string) {
     this.src = src;
@@ -36,31 +33,38 @@ export class Interpreter {
         /^.$/,
         nextInput => {
           this.curName += nextInput;
+          return [];
         },
-        [],
     );
 
-    const readSpacesRule = new Rule(/^\s$/, () => {}, [
-      new Rule(
-          /^[^\s]$/,
-          nextInput => {
-            this.precedenceTokens.unshift(nextInput);
-            this.precedenceTokens.unshift('spaces');
-          }),
-      new Rule(/^\s$/, () => {}, []),
+    const readSpacesRule = new Rule(
+        /^\s$/,
+        () =>
+            [new Rule(
+                 /^[^\s]$/,
+                 nextInput => {
+                   this.precedenceTokens.unshift(nextInput);
+                   this.precedenceTokens.unshift('spaces');
+                   return null;
+                 }),
+             new Rule(/^\s$/, () => []),
     ]);
 
-    const defRule = () =>
-        new Rule('def', () => this.funcDefs.unshift(new FuncDef()), [
+    const funcdefRule = () => {
+      return new Rule('def', () => {
+        this.funcdefs.unshift(new Funcdef());
+        return [
           new Rule(
-              /^\($/,
+              '(',
               () => {
-                this.funcDefs[0].name = this.curName;
+                this.funcdefs[0].name = this.curName;
                 this.curName = '';
-              },
-              []),
+                return [];
+              }),
           readTokenRule
-        ]);
+        ];
+      });
+    };
 
     this.rules = [
       readSpacesRule,
@@ -69,23 +73,22 @@ export class Interpreter {
           () => {
             this.precedenceTokens.unshift(this.curName);
             this.curName = '';
-          },
-          [defRule()]),
+            return [funcdefRule()];
+          }),
       readTokenRule,
     ];
     this.callStack = [this.rules];
   }
 
-  popNextToken() {
+  private popNextToken() {
     if (this.precedenceTokens.length) {
       return this.precedenceTokens.shift()!;
     }
-    if (this.cursor > this.src.length) {
-      throw Error('Unexpected End');
+    if (this.cursor >= this.src.length) {
+      throw Error('Unexpected end.');
     }
     return this.src[this.cursor++];
   }
-
 
   step() {
     const nextToken = this.popNextToken();
@@ -94,16 +97,21 @@ export class Interpreter {
           rule.pattern === nextToken :
           rule.pattern.test(nextToken);
       if (match) {
-        if (rule.action !== null) {
-          rule.action(nextToken);
-        }
-        if (rule.childRules === null) {
+        const childRules = rule.action(nextToken);
+        if (childRules === null) {
           this.callStack.pop();
-        } else if (rule.childRules.length) {
-          this.callStack.push(rule.childRules);
+        } else if (childRules.length) {
+          this.callStack.push(childRules);
         }
         break;
       }
     }
+  }
+
+  toString() {
+    return JSON.stringify({
+      cursor: this.cursor,
+      precedenceTokens: this.precedenceTokens,
+    });
   }
 }
