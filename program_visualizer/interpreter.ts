@@ -1,17 +1,18 @@
 
 class Rule {
-  pattern: RegExp;
-  action: ((nextInput: string) => void)|null;
+  pattern: string|RegExp;
+  action: null|((nextInput: string) => void);
   childRules: null|Rule[];
 
   constructor(
-      pattern: RegExp, action: ((nextInput: string) => void)|null = null,
+      pattern: string|RegExp, action: null|((nextInput: string) => void) = null,
       childRules: null|Rule[] = null) {
     this.pattern = pattern;
     this.action = action;
     this.childRules = childRules;
   }
 }
+
 class FuncDef {
   name = '';
   args: string[] = [];
@@ -50,7 +51,7 @@ export class Interpreter {
     ]);
 
     const defRule = () =>
-        new Rule(/^def$/, () => this.funcDefs.unshift(new FuncDef()), [
+        new Rule('def', () => this.funcDefs.unshift(new FuncDef()), [
           new Rule(
               /^\($/,
               () => {
@@ -64,7 +65,7 @@ export class Interpreter {
     this.rules = [
       readSpacesRule,
       new Rule(
-          /^spaces$/,
+          'spaces',
           () => {
             this.precedenceTokens.unshift(this.curName);
             this.curName = '';
@@ -89,7 +90,10 @@ export class Interpreter {
   step() {
     const nextToken = this.popNextToken();
     for (const rule of this.callStack[this.callStack.length - 1]) {
-      if (rule.pattern.test(nextToken)) {
+      const match = typeof rule.pattern === 'string' ?
+          rule.pattern === nextToken :
+          rule.pattern.test(nextToken);
+      if (match) {
         if (rule.action !== null) {
           rule.action(nextToken);
         }
