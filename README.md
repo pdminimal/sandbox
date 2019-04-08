@@ -6,7 +6,8 @@ Experiments.
 It is aiming to visualize the runtime process of python, including the implementation of the interpreter.
 
 ## Text segmentation
-It is an experimental implementation of my text segmentation algorithm without grammar knowledge.
+It is an experimental implementation of my unsupervised text segmentation algorithm which doesn't depend on language-specific grammar knowledge.
+It has a very similar objective as [SentensePiece](https://github.com/google/sentencepiece)
 
 
 ## License
