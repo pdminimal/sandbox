@@ -51,13 +51,13 @@ export class Interpreter {
     ]);
 
     const funcdefRule = () => {
+      const funcdef = new Funcdef();
       return new Rule('def', () => {
-        this.funcdefs.unshift(new Funcdef());
         return [
           new Rule(
               '(',
               () => {
-                this.funcdefs[0].name = this.curName;
+                funcdef.name = this.curName;
                 this.curName = '';
                 return [];
               }),

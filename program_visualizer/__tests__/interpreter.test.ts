@@ -30,8 +30,6 @@ describe('test funcdef', () => {
     }
     expect(interpreter.cursor).toBe(8);
     expect(interpreter.precedenceTokens).toEqual([]);
-    expect(interpreter.funcdefs.length).toEqual(1);
-    expect(interpreter.funcdefs[0].name).toEqual('bin');
   });
 
   test('read many spaces between def and funcname', () => {
@@ -52,7 +50,5 @@ describe('test funcdef', () => {
     }
     expect(interpreter.cursor).toBe(9);
     expect(interpreter.precedenceTokens).toEqual([]);
-    expect(interpreter.funcdefs.length).toEqual(1);
-    expect(interpreter.funcdefs[0].name).toEqual('bin');
   });
 });

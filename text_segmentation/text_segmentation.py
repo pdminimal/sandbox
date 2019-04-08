@@ -10,62 +10,38 @@ with open('corpus.txt') as f:
 
 text = re.sub(r'(［.+?］|《.+?》)', '', text, flags=(re.MULTILINE | re.DOTALL))
 text = re.sub('\u3000+', '\u3000', text, flags=(re.MULTILINE | re.DOTALL))
+text = re.sub('\n', '', text, flags=(re.MULTILINE | re.DOTALL))
 orig = jaconv.h2z(text, digit=True, ascii=True)
 
 
-def make_next_segs(orig, one_grams, thres=1000):
-    one_gram_counts = Counter(one_grams).most_common(thres)
+def make_next_segs(orig, one_grams):
+    volume = len(set(one_grams))
 
+    one_gram_counts = Counter(one_grams).most_common(volume)
     two_grams = [''.join(one_grams[i: i + 2])
-                 for i in range(0, len(one_grams), 2) if '\n' not in one_grams[i: i + 2]]
+                 for i in range(0, len(one_grams), 2)]
     two_grams2 = [''.join(one_grams[i: i + 2])
-                  for i in range(1, len(one_grams), 2) if '\n' not in one_grams[i: i + 2]]
-    two_gram_counts = Counter(two_grams + two_grams2).most_common(thres)
-    segs = two_gram_counts + one_gram_counts
-    segs.sort(key=lambda a: (-a[1], len(a[0])))
-    segs = segs[:thres]
-    segs.sort(key=lambda a: -len(a[0]))
-    pattern = f"({'|'.join([i[0] for i in segs])}|.)"
-    return [i for i in re.findall(pattern, orig) if i]
+                  for i in range(1, len(one_grams), 2)]
+    two_gram_counts = Counter(two_grams + two_grams2).most_common(volume // 5)
+    vocab = two_gram_counts + one_gram_counts
+    vocab.sort(key=lambda a: (-len(a[0]), -a[1]))
+    pattern = f"({'|'.join([i[0] for i in vocab])}|.)"
+    vocab = Counter(re.findall(pattern, orig)).most_common(volume)
+    vocab.sort(key=lambda a: -len(a[0]))
+    pattern = f"({'|'.join([i[0] for i in vocab])}|.)"
+    return re.findall(pattern, orig)
 
 
 print("{:,}".format(len(orig)))
 segs = orig[: 10 * 1000 * 1000]
-prev = segs
-prev_score = None
-for i in range(20):
-    newsegs = []
-    for seg in segs:
-        if random.randint(0, 5) > 0:
-            newsegs.append(seg)
-        else:
-            newsegs.extend(seg)
-    l = len(set(segs))
-    print(l)
-    segs = make_next_segs(orig, segs, l)
-    score = len(set(segs))
-    if prev_score and prev_score >= score:
-        print(i, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        print(i, prev_score, score)
+TARGET_VOCAB = 10000
+for i in range(100):
+    segs = make_next_segs(orig, segs)
+    num = len(set(segs))
+    score = num * len(segs)
+    print(score, num)
+    if num > TARGET_VOCAB:
         break
-    print(i, "{:,}".format(prev_score or 0),
-          "{:,}".format(score), len(prev), len(segs))
-    prev = segs
-    prev_score = score
-c = Counter(segs).most_common(len(segs))
 
 start = 30000
-print(orig[start: start + 300])
 print([unicodedata.normalize("NFKC", i) for i in segs[start:start + 300]])
-c.sort(key=lambda a: -len(a[0]))
-pattern = f"({'|'.join([i[0] for i in c[:l]])}|)"
-segs = [i for i in re.findall(pattern, orig) if i]
-print([unicodedata.normalize("NFKC", i) for i in segs[start:start + 300]])
-print([(unicodedata.normalize("NFKC", i[0]), i[1])
-       for i in c if len(i[0]) > 8][:1300])
-print(i)
-
-
-# abab
-# a 2 b 2, abab 1 < ab 2
-# 1*2+1*2 +1*2, 6*1 < 3 * 3
