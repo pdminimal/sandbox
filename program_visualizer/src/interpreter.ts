@@ -9,7 +9,6 @@ export class Interpreter {
   src: string;
   cursor = 0;
   rules: Rule[];
-  curName = '';
   precedenceTokens: string[] = [];
   callStack: Rule[][];
   funcdefs: Funcdef[] = [];
@@ -18,64 +17,28 @@ export class Interpreter {
   constructor(src: string) {
     this.src = src;
 
-    const readNameRule: Rule = [
-      /^.$/,
-      nextInput => {
-        this.curName += nextInput;
-        return [];
-      },
-    ];
-
     const tokenizer = new Tokenizer(this);
 
-    const funcdefAction: () => Rule[] = () => {
-      const funcdef = new Funcdef();
-      this.currFuncdef = funcdef;
-      return [
-        [
-          '(',
-          () => {
-            funcdef.name = this.curName;
-            this.curName = '';
-            return [
-              [
-                ')',
-                () => {
-                  funcdef.parameters = [this.curName];
-                  this.curName = '';
-                  return [
-                    [
-                      ':',
-                      () => {
-                        return null;
-                      }
-                    ],
-                  ];
-                }
-              ],
-              tokenizer.readSpacesRule,
-              readNameRule,
-            ];
-          }
-        ],
-        ['spaces', () => []], tokenizer.readSpacesRule, readNameRule
-      ];
-    };
-
     this.rules = [
-      ['def', funcdefAction],
+      [
+        'def',
+        () => {
+          const funcdef = new Funcdef(tokenizer);
+          this.currFuncdef = funcdef;
+          return funcdef.action();
+        }
+      ],
       [
         'spaces',
         () => {
-          if (this.curName) {
-            this.precedenceTokens.unshift(this.curName);
-            this.curName = '';
+          if (tokenizer.curName) {
+            tokenizer.pushName();
           }
           return [];
         }
       ],
       tokenizer.readSpacesRule,
-      readNameRule,
+      tokenizer.readNameRule,
     ];
     this.callStack = [this.rules];
   }
@@ -116,7 +79,6 @@ export class Interpreter {
     return JSON.stringify({
       cursor: this.cursor,
       precedenceTokens: this.precedenceTokens,
-      curName: this.curName
     });
   }
 }
