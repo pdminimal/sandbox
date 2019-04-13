@@ -1,28 +1,29 @@
 import {Interpreter, Rule} from './interpreter';
 
-export class Tokenizer {
+export class Lex {
   interpreter: Interpreter;
-  curName = '';
+  name = '';
+  spaces = '';
 
   constructor(interpreter: Interpreter) {
     this.interpreter = interpreter;
   }
 
   pushName() {
-    this.interpreter.precedenceTokens.unshift(this.curName);
-    this.curName = '';
+    this.interpreter.precedenceTokens.unshift(this.name);
+    this.name = '';
   }
 
   popName() {
-    const ret = this.curName;
-    this.curName = '';
+    const ret = this.name;
+    this.name = '';
     return ret;
   }
 
   readNameRule: Rule = [
     /^.$/,
     nextInput => {
-      this.curName += nextInput;
+      this.name += nextInput;
       return [];
     },
   ];
@@ -30,7 +31,9 @@ export class Tokenizer {
 
   readSpacesRule: Rule = [
     /^\s$/,
-    () => [
+    nextToken => {
+      this.spaces = nextToken;
+      return [
         [
           /^[^\s]$/,
           nextInput => {
@@ -39,7 +42,14 @@ export class Tokenizer {
             return null;
           }
         ],
-        [/^\s$/, () => []],
-  ]
+        [
+          /^\s$/,
+          nextToken => {
+            this.spaces += nextToken;
+            return [];
+          }
+        ],
+      ];
+    }
   ];
 }

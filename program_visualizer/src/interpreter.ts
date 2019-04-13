@@ -1,9 +1,9 @@
 
 
 import {Funcdef} from './funcdef';
-import {Tokenizer} from './tokenizer';
+import {Lex} from './tokenizer';
 
-export type Rule = [string | RegExp, (nextInput: string) => null | Rule[]];
+export type Rule = [string | RegExp, (nextInput: string) => Rule[] | null];
 
 export class Interpreter {
   src: string;
@@ -12,27 +12,37 @@ export class Interpreter {
   precedenceTokens: string[] = [];
   callStack: Rule[][];
   funcdefs: Funcdef[] = [];
-  currFuncdef: null|Funcdef = null;
+  currFuncdef: Funcdef|null = null;
+  lastToken: string|undefined;
+  tokenizer: Lex;
+  indentations: string[] = [];
 
   constructor(src: string) {
     this.src = src;
 
-    const tokenizer = new Tokenizer(this);
+    const tokenizer = new Lex(this);
+    this.tokenizer = tokenizer;
 
     this.rules = [
       [
         'def',
         () => {
-          const funcdef = new Funcdef(tokenizer);
+          const funcdef = new Funcdef(this);
           this.currFuncdef = funcdef;
           return funcdef.action();
         }
       ],
       [
+        'EOS',
+        () => null
+      ],
+      [
         'spaces',
         () => {
-          if (tokenizer.curName) {
+          if (tokenizer.name) {
             tokenizer.pushName();
+          } else {
+            throw new Error('Unexpected indent.');
           }
           return [];
         }
@@ -48,9 +58,35 @@ export class Interpreter {
       return this.precedenceTokens.shift()!;
     }
     if (this.cursor >= this.src.length) {
-      throw Error('Unexpected end.');
+      return 'EOS';
     }
     return this.src[this.cursor++];
+  }
+
+  getCurrentIndent() {
+    if (!this.indentations.length) {
+      return '';
+    }
+    return this.indentations[this.indentations.length - 1];
+  }
+
+  pushIndent() {
+    if (!this.indentations.length) {
+      this.indentations.push(this.tokenizer.spaces);
+    } else {
+      let curLength = this.getCurrentIndent().length;
+      const nextLength = this.tokenizer.spaces.length;
+      if (curLength < nextLength) {
+        this.indentations.push(this.tokenizer.spaces);
+      }
+      while (curLength > nextLength) {
+        this.indentations.pop();
+        curLength = this.getCurrentIndent().length;
+      }
+      if (curLength < nextLength) {
+        throw new Error('Unindent does not match any outer indentation level.');
+      }
+    }
   }
 
   step() {
@@ -71,8 +107,10 @@ export class Interpreter {
       }
     }
     if (!matched) {
-      throw Error(`Unexpected token: ${nextToken}`);
+      console.log(this);
+      throw new Error(`Unexpected token: ${nextToken}`);
     }
+    this.lastToken = nextToken;
   }
 
   toString() {
