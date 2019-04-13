@@ -12,7 +12,7 @@ class Rule {
 
 class Funcdef {
   name = '';
-  args: string[] = [];
+  parameters: string[] = [];
   body = '';
   constructor() {}
 }
@@ -25,6 +25,7 @@ export class Interpreter {
   precedenceTokens: string[] = [];
   callStack: Rule[][];
   funcdefs: Funcdef[] = [];
+  currFuncdef: null|Funcdef = null;
 
   constructor(src: string) {
     this.src = src;
@@ -52,6 +53,7 @@ export class Interpreter {
 
     const funcdefRule = () => {
       const funcdef = new Funcdef();
+      this.currFuncdef = funcdef;
       return new Rule('def', () => {
         return [
           new Rule(

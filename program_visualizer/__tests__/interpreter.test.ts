@@ -51,4 +51,14 @@ describe('test funcdef', () => {
     expect(interpreter.cursor).toBe(9);
     expect(interpreter.precedenceTokens).toEqual([]);
   });
+
+  // test('parameters', () => {
+  //   const source = 'def bin(a, b):';
+  //   const interpreter = new Interpreter(source);
+  //   while (interpreter.src[interpreter.cursor] !== ':') {
+  //     interpreter.step();
+  //   }
+  //   interpreter.step();
+  //   expect(interpreter.currFuncdef!.parameters.length).toBe(2);
+  // });
 });

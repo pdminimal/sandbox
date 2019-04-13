@@ -3,11 +3,11 @@
 Experiments.
 
 ## Program visualizer
-It is aiming to visualize the runtime process of python, including the implementation of the interpreter.
+It is aiming to visualize the runtime process of python, including an implementation of the interpreter.
 
 ## Text segmentation
 It is an experimental implementation of my unsupervised text segmentation algorithm which doesn't depend on language-specific grammar knowledge.
-It has a very similar objective as [SentensePiece](https://github.com/google/sentencepiece)
+It has very similar objectives as [SentensePiece](https://github.com/google/sentencepiece).
 
 
 ## License

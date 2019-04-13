@@ -1,10 +1,10 @@
 {
-  "name": "sandbox",
+  "name": "program_visualizer",
   "version": "0.0.1",
-  "description": "sandbox",
+  "description": "program_visualizer",
   "main": "index.js",
   "scripts": {
-    "test": "jest .",
+    "test": "jest --watch --notify .",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
@@ -12,10 +12,6 @@
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run check"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pdminimal/sandbox.git"
   },
   "author": "pdminimal",
   "license": "0BSD",
@@ -37,6 +33,10 @@
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testPathIgnorePatterns": ["/node_modules/", "build", "dist"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "build",
+      "dist"
+    ]
   }
 }
