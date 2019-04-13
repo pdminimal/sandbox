@@ -1,4 +1,4 @@
-import {Interpreter} from '../interpreter';
+import {Interpreter} from '../src/interpreter';
 
 test('initialize interpreter', () => {
   const interpreter = new Interpreter('test');
@@ -15,50 +15,39 @@ describe('test funcdef', () => {
   test('funcname', () => {
     const source = 'def bin(';
     const interpreter = new Interpreter(source);
-    expect(interpreter.src).toBe(source);
-    for (let cursor = 0; cursor < 4; cursor++) {
+    while (interpreter.src[interpreter.cursor] !== '(') {
       interpreter.step();
     }
-    expect(interpreter.cursor).toBe(4);
     interpreter.step();
-    interpreter.step();
-    expect(interpreter.precedenceTokens).toEqual(['def', 'b']);
-
-    interpreter.step();
-    for (let cursor = 4; cursor < 8; cursor++) {
-      interpreter.step();
-    }
-    expect(interpreter.cursor).toBe(8);
-    expect(interpreter.precedenceTokens).toEqual([]);
+    expect(interpreter.currFuncdef!.name).toBe('bin');
   });
 
   test('read many spaces between def and funcname', () => {
     const source = 'def  bin(';
     const interpreter = new Interpreter(source);
-    expect(interpreter.src).toBe(source);
-    for (let cursor = 0; cursor < 6; cursor++) {
+    while (interpreter.src[interpreter.cursor] !== '(') {
       interpreter.step();
     }
-    expect(interpreter.cursor).toBe(6);
-    expect(interpreter.precedenceTokens).toEqual(['spaces', 'b']);
     interpreter.step();
-    expect(interpreter.precedenceTokens).toEqual(['def', 'b']);
-
-    interpreter.step();
-    for (let cursor = 5; cursor < 9; cursor++) {
-      interpreter.step();
-    }
-    expect(interpreter.cursor).toBe(9);
-    expect(interpreter.precedenceTokens).toEqual([]);
+    expect(interpreter.currFuncdef!.name).toBe('bin');
   });
 
-  // test('parameters', () => {
-  //   const source = 'def bin(a, b):';
-  //   const interpreter = new Interpreter(source);
-  //   while (interpreter.src[interpreter.cursor] !== ':') {
-  //     interpreter.step();
-  //   }
-  //   interpreter.step();
-  //   expect(interpreter.currFuncdef!.parameters.length).toBe(2);
-  // });
+  test('parameters', () => {
+    const readUntilEndDef = (src: string) => {
+      const interpreter = new Interpreter(src);
+      while (interpreter.src[interpreter.cursor] !== ':') {
+        interpreter.step();
+      }
+      interpreter.step();
+      return interpreter;
+    };
+    const interpreter = readUntilEndDef('def bin(a):');
+    expect(interpreter.currFuncdef!.parameters).toEqual(['a']);
+
+    // interpreter = readUntilEndDef('def bin( b):');
+    // expect(interpreter.currFuncdef!.parameters).toEqual(['b']);
+
+    // interpreter = readUntilEndDef('def bin(a, b):');
+    // expect(interpreter.currFuncdef!.parameters).toEqual(['a', 'b']);
+  });
 });

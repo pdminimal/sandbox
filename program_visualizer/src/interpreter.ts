@@ -1,12 +1,9 @@
 
-type Rule = [string | RegExp, (nextInput: string) => null | Rule[]];
 
-class Funcdef {
-  name = '';
-  parameters: string[] = [];
-  body = '';
-  constructor() {}
-}
+import {Funcdef} from './funcdef';
+import {Tokenizer} from './tokenizer';
+
+export type Rule = [string | RegExp, (nextInput: string) => null | Rule[]];
 
 export class Interpreter {
   src: string;
@@ -21,7 +18,7 @@ export class Interpreter {
   constructor(src: string) {
     this.src = src;
 
-    const readTokenRule: Rule = [
+    const readNameRule: Rule = [
       /^.$/,
       nextInput => {
         this.curName += nextInput;
@@ -29,53 +26,56 @@ export class Interpreter {
       },
     ];
 
-    const readSpacesRule: Rule = [
-      /^\s$/,
-      () => [
-          [
-            /^[^\s]$/,
-            nextInput => {
-              this.precedenceTokens.unshift(nextInput);
-              this.precedenceTokens.unshift('spaces');
-              return null;
-            }
-          ],
-          [/^\s$/, () => []],
-    ]
-    ];
+    const tokenizer = new Tokenizer(this);
 
-    const funcdefRule: () => Rule = () => {
+    const funcdefAction: () => Rule[] = () => {
       const funcdef = new Funcdef();
       this.currFuncdef = funcdef;
       return [
-        'def',
-        () => {
-          return [
-            [
-              '(',
-              () => {
-                funcdef.name = this.curName;
-                this.curName = '';
-                return [];
-              }
-            ],
-            readTokenRule
-          ];
-        }
+        [
+          '(',
+          () => {
+            funcdef.name = this.curName;
+            this.curName = '';
+            return [
+              [
+                ')',
+                () => {
+                  funcdef.parameters = [this.curName];
+                  this.curName = '';
+                  return [
+                    [
+                      ':',
+                      () => {
+                        return null;
+                      }
+                    ],
+                  ];
+                }
+              ],
+              tokenizer.readSpacesRule,
+              readNameRule,
+            ];
+          }
+        ],
+        ['spaces', () => []], tokenizer.readSpacesRule, readNameRule
       ];
     };
 
     this.rules = [
-      readSpacesRule,
+      ['def', funcdefAction],
       [
         'spaces',
         () => {
-          this.precedenceTokens.unshift(this.curName);
-          this.curName = '';
-          return [funcdefRule()];
+          if (this.curName) {
+            this.precedenceTokens.unshift(this.curName);
+            this.curName = '';
+          }
+          return [];
         }
       ],
-      readTokenRule,
+      tokenizer.readSpacesRule,
+      readNameRule,
     ];
     this.callStack = [this.rules];
   }
@@ -92,6 +92,7 @@ export class Interpreter {
 
   step() {
     const nextToken = this.popNextToken();
+    let matched = false;
     for (const rule of this.callStack[this.callStack.length - 1]) {
       const match = typeof rule[0] === 'string' ? rule[0] === nextToken :
                                                   rule[0].test(nextToken);
@@ -102,8 +103,12 @@ export class Interpreter {
         } else if (childRules.length) {
           this.callStack.push(childRules);
         }
+        matched = true;
         break;
       }
+    }
+    if (!matched) {
+      throw Error(`Unexpected token: ${nextToken}`);
     }
   }
 
@@ -111,6 +116,7 @@ export class Interpreter {
     return JSON.stringify({
       cursor: this.cursor,
       precedenceTokens: this.precedenceTokens,
+      curName: this.curName
     });
   }
 }
