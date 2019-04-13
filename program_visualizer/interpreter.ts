@@ -1,14 +1,5 @@
 
-class Rule {
-  pattern: string|RegExp;
-  action: (nextInput: string) => null | Rule[];
-
-  constructor(
-      pattern: string|RegExp, action: (nextInput: string) => null | Rule[]) {
-    this.pattern = pattern;
-    this.action = action;
-  }
-}
+type Rule = [string | RegExp, (nextInput: string) => null | Rule[]];
 
 class Funcdef {
   name = '';
@@ -30,53 +21,60 @@ export class Interpreter {
   constructor(src: string) {
     this.src = src;
 
-    const readTokenRule = new Rule(
-        /^.$/,
-        nextInput => {
-          this.curName += nextInput;
-          return [];
-        },
-    );
+    const readTokenRule: Rule = [
+      /^.$/,
+      nextInput => {
+        this.curName += nextInput;
+        return [];
+      },
+    ];
 
-    const readSpacesRule = new Rule(
-        /^\s$/,
-        () =>
-            [new Rule(
-                 /^[^\s]$/,
-                 nextInput => {
-                   this.precedenceTokens.unshift(nextInput);
-                   this.precedenceTokens.unshift('spaces');
-                   return null;
-                 }),
-             new Rule(/^\s$/, () => []),
-    ]);
+    const readSpacesRule: Rule = [
+      /^\s$/,
+      () => [
+          [
+            /^[^\s]$/,
+            nextInput => {
+              this.precedenceTokens.unshift(nextInput);
+              this.precedenceTokens.unshift('spaces');
+              return null;
+            }
+          ],
+          [/^\s$/, () => []],
+    ]
+    ];
 
-    const funcdefRule = () => {
+    const funcdefRule: () => Rule = () => {
       const funcdef = new Funcdef();
       this.currFuncdef = funcdef;
-      return new Rule('def', () => {
-        return [
-          new Rule(
+      return [
+        'def',
+        () => {
+          return [
+            [
               '(',
               () => {
                 funcdef.name = this.curName;
                 this.curName = '';
                 return [];
-              }),
-          readTokenRule
-        ];
-      });
+              }
+            ],
+            readTokenRule
+          ];
+        }
+      ];
     };
 
     this.rules = [
       readSpacesRule,
-      new Rule(
-          'spaces',
-          () => {
-            this.precedenceTokens.unshift(this.curName);
-            this.curName = '';
-            return [funcdefRule()];
-          }),
+      [
+        'spaces',
+        () => {
+          this.precedenceTokens.unshift(this.curName);
+          this.curName = '';
+          return [funcdefRule()];
+        }
+      ],
       readTokenRule,
     ];
     this.callStack = [this.rules];
@@ -95,11 +93,10 @@ export class Interpreter {
   step() {
     const nextToken = this.popNextToken();
     for (const rule of this.callStack[this.callStack.length - 1]) {
-      const match = typeof rule.pattern === 'string' ?
-          rule.pattern === nextToken :
-          rule.pattern.test(nextToken);
+      const match = typeof rule[0] === 'string' ? rule[0] === nextToken :
+                                                  rule[0].test(nextToken);
       if (match) {
-        const childRules = rule.action(nextToken);
+        const childRules = rule[1](nextToken);
         if (childRules === null) {
           this.callStack.pop();
         } else if (childRules.length) {
