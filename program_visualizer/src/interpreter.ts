@@ -1,7 +1,7 @@
 
 
-import {Funcdef} from './funcdef';
-import {Lex} from './lex';
+import {FuncDef} from './func_def';
+import {Lex} from './lexer';
 
 export type Rule = [string | RegExp, (nextInput: string) => Rule[] | null];
 
@@ -11,44 +11,41 @@ export class Interpreter {
   rules: Rule[];
   precedenceTokens: string[] = [];
   callStack: Rule[][];
-  funcdefs: Funcdef[] = [];
-  currFuncdef: Funcdef|null = null;
+  funcDefs: FuncDef[] = [];
+  curFuncDef: FuncDef|null = null;
   lastToken: string|undefined;
-  tokenizer: Lex;
+  lexer: Lex;
   indentations: string[] = [];
 
   constructor(src: string) {
     this.src = src;
 
-    const tokenizer = new Lex(this);
-    this.tokenizer = tokenizer;
+    const lexer = new Lex(this);
+    this.lexer = lexer;
 
     this.rules = [
       [
         'def',
         () => {
-          const funcdef = new Funcdef(this);
-          this.currFuncdef = funcdef;
-          return funcdef.readDefinition();
+          const funcDef = new FuncDef(this);
+          this.curFuncDef = funcDef;
+          return funcDef.readDefinition();
         }
       ],
-      [
-        'EOS',
-        () => null
-      ],
+      ['EOS', () => null],
       [
         'spaces',
         () => {
-          if (tokenizer.name) {
-            tokenizer.pushName();
+          if (lexer.symbol) {
+            lexer.pushSymbol();
           } else {
             throw new Error('Unexpected indent.');
           }
           return [];
         }
       ],
-      tokenizer.readSpacesRule,
-      tokenizer.readNameRule,
+      lexer.readSpacesRule,
+      lexer.readNameRule,
     ];
     this.callStack = [this.rules];
   }
@@ -72,12 +69,12 @@ export class Interpreter {
 
   pushIndent() {
     if (!this.indentations.length) {
-      this.indentations.push(this.tokenizer.spaces);
+      this.indentations.push(this.lexer.spaces);
     } else {
       let curLength = this.getCurrentIndent().length;
-      const nextLength = this.tokenizer.spaces.length;
+      const nextLength = this.lexer.spaces.length;
       if (curLength < nextLength) {
-        this.indentations.push(this.tokenizer.spaces);
+        this.indentations.push(this.lexer.spaces);
       }
       while (curLength > nextLength) {
         this.indentations.pop();

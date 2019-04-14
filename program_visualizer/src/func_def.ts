@@ -1,6 +1,6 @@
 import {Interpreter, Rule} from './interpreter';
 
-export class Funcdef {
+export class FuncDef {
   name = '';
   parameters: string[] = [];
   body = '';
@@ -11,8 +11,8 @@ export class Funcdef {
   }
 
   readDefinition(): Rule[] {
-    const tokenizer = this.interpreter.tokenizer;
-    const gotoParent = (token:string) => {
+    const lexer = this.interpreter.lexer;
+    const gotoParent = (token: string) => {
       this.interpreter.precedenceTokens.unshift(token);
       return null;
     };
@@ -40,12 +40,15 @@ export class Funcdef {
               () => {
                 this.interpreter.pushIndent();
                 return [
-                  [/\n|EOS/, token => {
-                    if (token === '\n') {
-                      this.body += '\n';
+                  [
+                    /\n|EOS/,
+                    token => {
+                      if (token === '\n') {
+                        this.body += '\n';
+                      }
+                      return gotoParent(token);
                     }
-                    return gotoParent(token);
-                  }],
+                  ],
                   [
                     /^[^\n]$/,
                     token => {
@@ -53,24 +56,24 @@ export class Funcdef {
                       return [];
                     }
                   ],
-            
+
                 ];
               }
             ],
-            tokenizer.readSpacesRule,
+            lexer.readSpacesRule,
           ];
         }
       ],
-      [/^[^\s]$/, () => {
-        this.interpreter.precedenceTokens.unshift('EOS');
-        this.interpreter.precedenceTokens.unshift('endDef');
-        return [];
-      }],
       [
-        'spaces',
-        () => []
+        /^[^\s]$/,
+        () => {
+          this.interpreter.precedenceTokens.unshift('EOS');
+          this.interpreter.precedenceTokens.unshift('endDef');
+          return [];
+        }
       ],
-      tokenizer.readSpacesRule,
+      ['spaces', () => []],
+      lexer.readSpacesRule,
     ];
 
     return [
@@ -78,7 +81,7 @@ export class Funcdef {
       [
         '(',
         () => {
-          this.name = tokenizer.popName();
+          this.name = lexer.popSymbol();
           if (!this.name) {
             throw new Error('Empty function name.');
           }
@@ -88,9 +91,9 @@ export class Funcdef {
               /[,)]/,
               token => {
                 if (!this.parameters) {
-                  this.parameters = [tokenizer.popName()];
+                  this.parameters = [lexer.popSymbol()];
                 } else {
-                  this.parameters.push(tokenizer.popName());
+                  this.parameters.push(lexer.popSymbol());
                 }
                 if (token === ')') {
                   return [
@@ -102,7 +105,7 @@ export class Funcdef {
                       }
                     ],
                     ['spaces', () => []],
-                    tokenizer.readSpacesRule,
+                    lexer.readSpacesRule,
                   ];
                 } else {
                   return [];
@@ -110,12 +113,12 @@ export class Funcdef {
               }
             ],
             ['spaces', () => []],
-            tokenizer.readSpacesRule,
-            tokenizer.readNameRule,
+            lexer.readSpacesRule,
+            lexer.readNameRule,
           ];
         }
       ],
-      ['spaces', () => []], tokenizer.readSpacesRule, tokenizer.readNameRule
+      ['spaces', () => []], lexer.readSpacesRule, lexer.readNameRule
     ];
   }
 }

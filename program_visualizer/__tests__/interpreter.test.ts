@@ -9,9 +9,9 @@ test('unexpedted end', () => {
   const interpreter = new Interpreter('def a():');
 
   expect(() => {
-    while(interpreter.lastToken !== 'EOS') {
+    while (interpreter.lastToken !== 'EOS') {
       interpreter.step();
-    }    
+    }
   }).toThrow(/end/);
 });
 
