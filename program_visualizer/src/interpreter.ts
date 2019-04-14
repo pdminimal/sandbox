@@ -1,7 +1,7 @@
 
 
 import {Funcdef} from './funcdef';
-import {Lex} from './tokenizer';
+import {Lex} from './lex';
 
 export type Rule = [string | RegExp, (nextInput: string) => Rule[] | null];
 
@@ -29,7 +29,7 @@ export class Interpreter {
         () => {
           const funcdef = new Funcdef(this);
           this.currFuncdef = funcdef;
-          return funcdef.action();
+          return funcdef.readDefinition();
         }
       ],
       [
@@ -107,7 +107,6 @@ export class Interpreter {
       }
     }
     if (!matched) {
-      console.log(this);
       throw new Error(`Unexpected token: ${nextToken}`);
     }
     this.lastToken = nextToken;

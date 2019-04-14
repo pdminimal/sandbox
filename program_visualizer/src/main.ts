@@ -1,6 +1,6 @@
 // import {Interpreter} from '../interpreter';
 
-export const binarySearch = `def binary_search(a, val):
+const binarySearch = `def binary_search(a, val):
     l = 0
     r = len(a) - 1
 

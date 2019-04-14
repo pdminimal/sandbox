@@ -10,7 +10,7 @@ export class Funcdef {
     this.interpreter = interpreter;
   }
 
-  action(): Rule[] {
+  readDefinition(): Rule[] {
     const tokenizer = this.interpreter.tokenizer;
     const gotoParent = (token:string) => {
       this.interpreter.precedenceTokens.unshift(token);
