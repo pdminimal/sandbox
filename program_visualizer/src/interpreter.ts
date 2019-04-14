@@ -1,5 +1,6 @@
 
 
+import {AtomExpr} from './atom_expr';
 import {FuncDef} from './func_def';
 import {Lex} from './lexer';
 
@@ -23,30 +24,7 @@ export class Interpreter {
     const lexer = new Lex(this);
     this.lexer = lexer;
 
-    this.rules = [
-      [
-        'def',
-        () => {
-          const funcDef = new FuncDef(this);
-          this.curFuncDef = funcDef;
-          return funcDef.readDefinition();
-        }
-      ],
-      ['EOS', () => null],
-      [
-        'spaces',
-        () => {
-          if (lexer.symbol) {
-            lexer.pushSymbol();
-          } else {
-            throw new Error('Unexpected indent.');
-          }
-          return [];
-        }
-      ],
-      lexer.readSpacesRule,
-      lexer.readNameRule,
-    ];
+    this.rules = new AtomExpr(this).readAtomRule();
     this.callStack = [this.rules];
   }
 

@@ -8,6 +8,6 @@ describe('test atom', () => {
       while (interpreter.lastToken !== 'EOS') {
         interpreter.step();
       }
-    }).toThrow(/is not defined/);
+    }).toThrow(/'test' is not defined/);
   });
 });
