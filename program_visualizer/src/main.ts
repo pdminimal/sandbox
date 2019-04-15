@@ -8,11 +8,10 @@ let binarySearch = `def binary_search(a, val):
         mid = (l + r) // 2
         if a[mid] == val:
             return mid
+        elif val < a[mid]:
+            r = mid - 1
         else:
-            if val < a[mid]:
-                r = mid - 1
-            else:
-                l = mid + 1
+            l = mid + 1
 
     return -1
 
@@ -28,12 +27,10 @@ const replaces = [
         mid = (l + r) // 2
         if a[mid] == val:
             return mid
+        elif val < a[mid]:
+            r = mid - 1
         else:
-            if val < a[mid]:
-                r = mid - 1
-            else:
-                l = mid + 1
-
+            l = mid + 1
     return -1
 `
   ]],
@@ -48,21 +45,19 @@ const replaces = [
         mid = (l + r) // 2
         if a[mid] == val:
             return mid
+        elif val < a[mid]:
+            r = mid - 1
         else:
-            if val < a[mid]:
-                r = mid - 1
-            else:
-                l = mid + 1
+            l = mid + 1
 `,
     `
     mid = (l + r) // 2
     if a[mid] == val:
         return mid
+    elif val < a[mid]:
+        r = mid - 1
     else:
-        if val < a[mid]:
-            r = mid - 1
-        else:
-            l = mid + 1
+        l = mid + 1
 `
   ]],
 
@@ -77,14 +72,13 @@ const replaces = [
     `
     if false:
         return mid
+    elif val < a[mid]:
+        r = mid - 1
     else:
-        if val < a[mid]:
-            r = mid - 1
-        else:
-            l = mid + 1
+        l = mid + 1
 `,
     `
-    if val < a[mid]:
+    elif val < a[mid]:
         r = mid - 1
     else:
         l = mid + 1
@@ -96,7 +90,7 @@ const replaces = [
   [['7 < 4', 'false']],
   [[
     `
-    if false:
+    elif false:
         r = mid - 1
     else:
         l = mid + 1
@@ -121,11 +115,10 @@ const replaces = [
         mid = (l + r) // 2
         if a[mid] == val:
             return mid
+        elif val < a[mid]:
+            r = mid - 1
         else:
-            if val < a[mid]:
-                r = mid - 1
-            else:
-                l = mid + 1
+            l = mid + 1
 `
     ]],
   [['l <=', '4 <=']],
@@ -137,21 +130,19 @@ const replaces = [
         mid = (l + r) // 2
         if a[mid] == val:
             return mid
+        elif val < a[mid]:
+            r = mid - 1
         else:
-            if val < a[mid]:
-                r = mid - 1
-            else:
-                l = mid + 1
+            l = mid + 1
 `,
     `
     mid = (l + r) // 2
     if a[mid] == val:
         return mid
+    elif val < a[mid]:
+        r = mid - 1
     else:
-        if val < a[mid]:
-            r = mid - 1
-        else:
-            l = mid + 1
+        l = mid + 1
 `
   ]],
 
@@ -166,11 +157,10 @@ const replaces = [
     `
     if true:
         return mid
+    elif val < a[mid]:
+        r = mid - 1
     else:
-        if val < a[mid]:
-            r = mid - 1
-        else:
-            l = mid + 1
+        l = mid + 1
 `,
     `
     return mid
@@ -187,7 +177,7 @@ if (src) {
   const step = () => {
     const curReplace = replaces[i];
     if (i === 1) {
-      binarySearch = binarySearch.slice(283);
+      binarySearch = binarySearch.slice(256);
     }
     for (let j = 0; j < curReplace.length; j++) {
       binarySearch = binarySearch.replace(curReplace[j][0], curReplace[j][1]);
