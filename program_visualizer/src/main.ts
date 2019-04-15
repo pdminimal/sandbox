@@ -31,6 +31,7 @@ const replaces = [
             r = mid - 1
         else:
             l = mid + 1
+
     return -1
 `
   ]],
