@@ -186,7 +186,7 @@ if (src) {
   let i = 0;
   const step = () => {
     const curReplace = replaces[i];
-    if (i === 0) {
+    if (i === 1) {
       binarySearch = binarySearch.slice(283);
     }
     for (let j = 0; j < curReplace.length; j++) {
