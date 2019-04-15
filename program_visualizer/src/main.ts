@@ -49,7 +49,8 @@ const replaces = [
   [['a[3]', '4']],
   [['== val', '== 7']],
   [['4 == 7', 'false']],
-  [[`
+  [[
+    `
         if false:
             return mid
         else:
@@ -57,31 +58,39 @@ const replaces = [
                 r = mid - 1
             else:
                 l = mid + 1
-`, `
+`,
+    `
         if val < a[mid]:
             r = mid - 1
         else:
             l = mid + 1
-`]],
+`
+  ]],
   [['val <', '7 <']],
   [['a[mid]', 'a[3]']],
   [['a[3]', '4']],
   [['7 < 4', 'false']],
-  [[`
+  [[
+    `
         if false:
             r = mid - 1
         else:
             l = mid + 1
-`, `
+`,
+    `
         l = mid + 1
-`]],
+`
+  ]],
   [['mid + 1', '3 + 1']],
   [['3 + 1', '4']],
-  [[`
+  [
+    [
+      `
     while true:
         mid = 3
         l = 4
-`, `    mid = 3
+`,
+      `    mid = 3
     l = 4
 
     while l <= r:
@@ -93,7 +102,10 @@ const replaces = [
                 r = mid - 1
             else:
                 l = mid + 1
-`], ['    l = 0\n', '']],
+`
+    ],
+    ['    l = 0\n', '']
+  ],
   [['l <=', '4 <=']],
   [['<= r', '<= 7']],
   [['4 <= 7', 'true']],
@@ -104,7 +116,8 @@ const replaces = [
   [['a[5]', '7']],
   [['== val', '== 7']],
   [['7 == 7', 'true']],
-  [[`
+  [[
+    `
         if true:
             return mid
         else:
@@ -112,9 +125,11 @@ const replaces = [
                 r = mid - 1
             else:
                 l = mid + 1
-`, `
+`,
+    `
         return mid
-`]],
+`
+  ]],
   [['return mid', 'return 5']],
 
 ];
