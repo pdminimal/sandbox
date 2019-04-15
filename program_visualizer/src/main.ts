@@ -169,22 +169,25 @@ const replaces = [
 `
   ]],
   [['return mid', 'return 5']],
-
+  [[]],
 ];
 
 const src = document.getElementById('src');
 if (src) {
   src.textContent = binarySearch;
   let i = 0;
+  const prefix = binarySearch.slice(0, 256);
   const step = () => {
     const curReplace = replaces[i];
-    if (i === 1) {
+    if (i === 0) {
       binarySearch = binarySearch.slice(256);
+    } else if (i === replaces.length - 1) {
+      binarySearch = '5';
     }
     for (let j = 0; j < curReplace.length; j++) {
       binarySearch = binarySearch.replace(curReplace[j][0], curReplace[j][1]);
     }
-    src.textContent = binarySearch;
+    src.textContent = prefix + binarySearch;
     i += 1;
     if (i < replaces.length) {
       setTimeout(step, 1000);
