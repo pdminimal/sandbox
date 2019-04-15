@@ -4,6 +4,7 @@ Experiments.
 
 ## Program visualizer
 It is aiming to visualize the runtime process of python, including an implementation of the interpreter.
+[Conceptual animation](https://pdminimal.github.io/sandbox/program_visualizer/) is here.
 
 ## Text segmentation
 It is an experimental implementation of my unsupervised text segmentation algorithm which doesn't depend on language-specific grammar knowledge.
