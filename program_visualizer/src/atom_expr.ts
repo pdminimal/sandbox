@@ -15,10 +15,18 @@ export class AtomExpr {
     '(',
     () => {
       if (this.interpreter.lexer.symbol) {
-        this.atom = this.interpreter.lexer.symbol
+        this.atom = this.interpreter.lexer.symbol;
+        for (const funcDef of this.interpreter.funcDefs) {
+          if (funcDef.name === this.atom) {
+            this.funcDef = funcDef;
+            return [
+
+            ];
+          }
+        }
         throw new Error(`Name '${this.atom}' is not defined`);
       }
-      return [];
+      throw new Error('No symbol');
     }
   ];
   readAtomRule(): Rule[] {
