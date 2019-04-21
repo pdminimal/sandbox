@@ -6,7 +6,7 @@ let binarySearch = `def binary_search(a, val):
 
     while l <= r:
         mid = (l + r) // 2
-        if a[mid] == val:
+        if val == a[mid]:
             return mid
         elif val < a[mid]:
             r = mid - 1
@@ -25,7 +25,7 @@ const replaces = [
 
     while l <= r:
         mid = (l + r) // 2
-        if a[mid] == val:
+        if val == a[mid]:
             return mid
         elif val < a[mid]:
             r = mid - 1
@@ -44,7 +44,29 @@ const replaces = [
     `
     while true:
         mid = (l + r) // 2
-        if a[mid] == val:
+        if val == a[mid]:
+            return mid
+        elif val < a[mid]:
+            r = mid - 1
+        else:
+            l = mid + 1
+`,
+    `
+    while true:
+{{        mid = (l + r) // 2
+        if val == a[mid]:
+            return mid
+        elif val < a[mid]:
+            r = mid - 1
+        else:
+            l = mid + 1
+}}`
+  ],
+  [
+    `
+    while true:
+        mid = (l + r) // 2
+        if val == a[mid]:
             return mid
         elif val < a[mid]:
             r = mid - 1
@@ -53,7 +75,7 @@ const replaces = [
 `,
     `
     mid = (l + r) // 2
-    if a[mid] == val:
+    if val == a[mid]:
         return mid
     elif val < a[mid]:
         r = mid - 1
@@ -61,15 +83,32 @@ const replaces = [
         l = mid + 1
 `
   ],
-
   ['l + r', '{{0}} + r', 'l = 0'],
   ['0 + r', '0 + {{7}}', 'r = 7'],
   ['(0 + 7)', '7'],
   ['7 // 2', '3'],
-  ['a[mid] ==', 'a[{{3}}] ==', 'mid = 3'],
+  ['val ==', '{{7}} ==', 'val=7'],
+  ['== a[mid]', '== a[{{3}}]', 'mid = 3'],
   ['a[3]', '4', ' 4'],
-  ['== val', '== {{7}}', 'val=7'],
-  ['4 == 7', 'false'],
+  ['7 == 4', 'false'],
+  [
+    `
+    if false:
+        return mid
+    elif val < a[mid]:
+        r = mid - 1
+    else:
+        l = mid + 1
+`,
+    `
+    if false:
+        return mid
+{{    elif val < a[mid]:
+        r = mid - 1
+    else:
+        l = mid + 1
+}}`
+  ],
   [
     `
     if false:
@@ -98,6 +137,20 @@ const replaces = [
         l = mid + 1
 `,
     `
+    elif false:
+        r = mid - 1
+    else:
+{{        l = mid + 1
+}}`
+  ],
+  [
+    `
+    elif false:
+        r = mid - 1
+    else:
+        l = mid + 1
+`,
+    `
     l = mid + 1
 `
   ],
@@ -111,15 +164,22 @@ const replaces = [
 `,
     `    mid = 3
     l = 4
+`
+  ],
+  [`
+
+`,
+    `
 
     while l <= r:
         mid = (l + r) // 2
-        if a[mid] == val:
+        if val == a[mid]:
             return mid
         elif val < a[mid]:
             r = mid - 1
         else:
             l = mid + 1
+
 `
   ],
   ['l <=', '{{4}} <=', 'l = 4'],
@@ -129,7 +189,29 @@ const replaces = [
     `
     while true:
         mid = (l + r) // 2
-        if a[mid] == val:
+        if val == a[mid]:
+            return mid
+        elif val < a[mid]:
+            r = mid - 1
+        else:
+            l = mid + 1
+`,
+    `
+    while true:
+{{        mid = (l + r) // 2
+        if val == a[mid]:
+            return mid
+        elif val < a[mid]:
+            r = mid - 1
+        else:
+            l = mid + 1
+}}`
+  ],
+  [
+    `
+    while true:
+        mid = (l + r) // 2
+        if val == a[mid]:
             return mid
         elif val < a[mid]:
             r = mid - 1
@@ -138,7 +220,7 @@ const replaces = [
 `,
     `
     mid = (l + r) // 2
-    if a[mid] == val:
+    if val == a[mid]:
         return mid
     elif val < a[mid]:
         r = mid - 1
@@ -152,10 +234,20 @@ const replaces = [
   ['(4 + 7)', '11'],
   ['11 // 2', '5'],
   ['    mid = 3\n', ''],
-  ['a[mid] ==', 'a[{{5}}] ==', 'mid = 5'],
+  ['val ==', '{{7}} ==', 'val=7'],
+  ['== a[mid]', '== a[{{5}}]', 'mid = 5'],
   ['a[5]', '7', ' 7'],
-  ['== val', '== {{7}}', 'val=7'],
   ['7 == 7', 'true'],
+  [
+    `
+    if true:
+        return mid
+`,
+    `
+    if true:
+{{        return mid
+}}`
+  ],
   [
     `
     if true:
@@ -209,18 +301,14 @@ if (src) {
       const end = srcText.indexOf(endStr, index + 2);
       span = document.createElement('span');
       span.textContent = srcText.slice(index + 2, end);
-      span.classList.add(startStr === '{{' ? 'd-emphasized' : 'd-def');
+      span.classList.add(startStr === '{{' ? 'emphasized' : 'd-def');
       spans.push(span);
       start = end + 2;
       index = srcText.slice(start).search(/\{\{|\{[%]/) + start;
-      if (index > srcText.length || index < 3) {
-        break;
-      }
     }
     const span = document.createElement('span');
     span.textContent = srcText.slice(start);
     spans.push(span);
-    // src.textContent = prefix + binarySearch;
     while (src.firstChild) {
       src.firstChild.remove();
     }
@@ -233,9 +321,6 @@ if (src) {
         if (element.classList.contains('d-def')) {
           element.classList.remove('d-def');
           element.classList.add('def');
-        } else if (element.classList.contains('d-emphasized')) {
-          element.classList.remove('d-emphasized');
-          element.classList.add('emphasized');
         }
       });
     });
