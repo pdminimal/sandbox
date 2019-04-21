@@ -1,4 +1,12 @@
 #src {
   white-space: pre-wrap;
-  font-family: 'Roboto mono', Menlo, 'Courier New', monospace;
+  font-family: "Roboto mono", Menlo, "Courier New", monospace;
+  .def {
+    color: #db4437;
+    font-weight: bold;
+  }
+  .emphasized {
+    color: #1a73e8;
+    font-weight: bold;
+  }
 }
