@@ -25,9 +25,9 @@
     "cssnano": "^4.1.10",
     "gts": "^0.9.0",
     "jest": "^24.7.1",
-    "sass": "^1.18.0",
+    "sass": "^1.19.0",
     "ts-jest": "^24.0.2",
-    "typescript": "~3.4.3"
+    "typescript": "~3.4.4"
   },
   "jest": {
     "transform": {
@@ -39,5 +39,9 @@
       "build",
       "dist"
     ]
+  },
+  "dependencies": {
+    "browserslist": "^4.5.5",
+    "caniuse-lite": "^1.0.30000962"
   }
 }

@@ -1,7 +1,9 @@
-sandbox
-.vscode
-corpus.txt
+.DS_Store
 node_modules
+.cache
+.vscode
 build
 dist
-.cache
+sandbox
+
+corpus.txt
