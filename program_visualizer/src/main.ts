@@ -209,7 +209,7 @@ if (src) {
       const end = srcText.indexOf(endStr, index + 2);
       span = document.createElement('span');
       span.textContent = srcText.slice(index + 2, end);
-      span.classList.add(startStr === '{{' ? 'emphasized' : 'def');
+      span.classList.add(startStr === '{{' ? 'd-emphasized' : 'd-def');
       spans.push(span);
       start = end + 2;
       index = srcText.slice(start).search(/\{\{|\{[%]/) + start;
@@ -227,11 +227,24 @@ if (src) {
     spans.forEach(element => {
       src.appendChild(element);
     });
+
+    setTimeout(() => {
+      spans.forEach(element => {
+        if (element.classList.contains('d-def')) {
+          element.classList.remove('d-def');
+          element.classList.add('def');
+        } else if (element.classList.contains('d-emphasized')) {
+          element.classList.remove('d-emphasized');
+          element.classList.add('emphasized');
+        }
+      });
+    });
+
     binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
     i += 1;
     if (i < replaces.length) {
-      setTimeout(step, 1000);
+      setTimeout(step, 1500);
     }
   };
-  setTimeout(step, 1000);
+  setTimeout(step, 1500);
 }
