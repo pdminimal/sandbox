@@ -298,7 +298,7 @@ function moveNext() {
 
 function movePrevious() {
   i -= 2;
-  i = Math.max(i, 0);
+  i = Math.max(i, -1);
   moveNext();
 }
 
@@ -310,7 +310,7 @@ function getNthSource(j: number) {
     return memo[j];
   }
 
-  let binarySearch = binarySearchOrig;
+  let binarySearch = binarySearchOrig.slice(256);
   for (let i = 0; i <= j; i++) {
     if (i in memo) {
       binarySearch = memo[i];
@@ -320,9 +320,7 @@ function getNthSource(j: number) {
       continue;
     }
     const curReplace = replaces[i];
-    if (i === 0) {
-      binarySearch = binarySearch.slice(256);
-    } else if (i === replaces.length - 1) {
+    if (i === replaces.length - 1) {
       binarySearch = '{{5}}';
     }
     if (curReplace.length) {
