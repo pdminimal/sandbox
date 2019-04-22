@@ -1,6 +1,6 @@
 // import {Interpreter} from '../interpreter';
 
-let binarySearch = `def binary_search(a, val):
+const binarySearchOrig = `def binary_search(a, val):
     l = 0
     r = len(a) - 1
 
@@ -260,31 +260,59 @@ const replaces = [
   [],
 ];
 
-const src = document.getElementById('src');
-if (src) {
-  src.textContent = binarySearch;
+const src = document.getElementById('src')!;
+const startButton = document.getElementById('start');
+if (src && startButton) {
+  src.textContent = binarySearchOrig;
+  startButton.addEventListener('click', startAnimation);
+}
+let timer: number;
+function startAnimation() {
+  src.textContent = binarySearchOrig;
+  const memo: {[key: number]: string;} = {};
   let i = 0;
-  const prefix = binarySearch.slice(0, 256);
+  const prefix = binarySearchOrig.slice(0, 256);
+  const getNthSource = (j: number) => {
+    let binarySearch = binarySearchOrig;
+    if (j in memo) {
+      return memo[j];
+    }
+    for (let i = 0; i <= j; i++) {
+      if (i in memo) {
+        binarySearch = memo[i];
+        if (i < j) {
+          binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
+        }
+        continue;
+      }
+      const curReplace = replaces[i];
+      if (i === 0) {
+        binarySearch = binarySearch.slice(256);
+      } else if (i === replaces.length - 1) {
+        binarySearch = '{{5}}';
+      }
+      if (curReplace.length) {
+        let replace = curReplace[1];
+        if (replace.indexOf('{{') < 0) {
+          replace = '{{' + replace + '}}';
+        }
+        binarySearch = binarySearch.replace(curReplace[0], replace);
+        if (curReplace.length > 2) {
+          binarySearch =
+              binarySearch.replace(curReplace[2], '{%' + curReplace[2] + '%}');
+        }
+      }
+      memo[i] = binarySearch;
+
+      if (i < j) {
+        binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
+      }
+    }
+    return binarySearch;
+  };
   const step = () => {
-    const curReplace = replaces[i];
-    if (i === 0) {
-      binarySearch = binarySearch.slice(256);
-    } else if (i === replaces.length - 1) {
-      binarySearch = '{{5}}';
-    }
-    if (curReplace.length) {
-      let replace = curReplace[1];
-      if (replace.indexOf('{{') < 0) {
-        replace = '{{' + replace + '}}';
-      }
-      binarySearch = binarySearch.replace(curReplace[0], replace);
-      if (curReplace.length > 2) {
-        binarySearch =
-            binarySearch.replace(curReplace[2], '{%' + curReplace[2] + '%}');
-      }
-    }
     const spans: HTMLSpanElement[] = [];
-    const srcText = prefix + binarySearch;
+    const srcText = prefix + getNthSource(i);
     let index = srcText.search(/\{\{|\{[%]/);
     let start = 0;
     while (index >= start) {
@@ -320,11 +348,14 @@ if (src) {
       });
     });
 
-    binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
     i += 1;
     if (i < replaces.length) {
-      setTimeout(step, 1500);
+      timer = setTimeout(step, 1500);
     }
   };
-  setTimeout(step, 1500);
+
+  if (timer) {
+    clearTimeout(timer);
+  }
+  timer = setTimeout(step, 1500);
 }
