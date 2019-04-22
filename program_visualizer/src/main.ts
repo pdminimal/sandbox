@@ -285,6 +285,7 @@ let timer: number;
 let i = 0;
 
 function stopAnimation() {
+  i = Math.min(i, replaces.length - 1);
   if (timer) {
     clearTimeout(timer);
   }
