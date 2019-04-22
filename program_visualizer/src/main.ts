@@ -275,6 +275,8 @@ if (src && startButton && stopButton) {
       movePrevious();
     } else if (event.key === 'ArrowRight') {
       moveNext();
+    } else if (event.key === ' ') {
+      stopAnimation();
     }
   });
 }
@@ -387,8 +389,10 @@ function step() {
 }
 
 function startAnimation() {
-  i = 0;
-  src.textContent = binarySearchOrig;
+  if (i >= replaces.length) {
+    i = 0;
+    src.textContent = binarySearchOrig;
+  }
   if (timer) {
     clearTimeout(timer);
   }
