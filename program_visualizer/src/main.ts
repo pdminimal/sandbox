@@ -260,100 +260,132 @@ const replaces = [
   [],
 ];
 
+const prefix = binarySearchOrig.slice(0, 256);
+const memo: {[key: number]: string;} = {};
+
 const src = document.getElementById('src')!;
 const startButton = document.getElementById('start');
 if (src && startButton) {
   src.textContent = binarySearchOrig;
   startButton.addEventListener('click', startAnimation);
-}
-let timer: number;
-function startAnimation() {
-  src.textContent = binarySearchOrig;
-  const memo: {[key: number]: string;} = {};
-  let i = 0;
-  const prefix = binarySearchOrig.slice(0, 256);
-  const getNthSource = (j: number) => {
-    let binarySearch = binarySearchOrig;
-    if (j in memo) {
-      return memo[j];
+  document.body.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      movePrevious();
+    } else if (event.key === 'ArrowRight') {
+      moveNext();
     }
-    for (let i = 0; i <= j; i++) {
-      if (i in memo) {
-        binarySearch = memo[i];
-        if (i < j) {
-          binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
-        }
-        continue;
-      }
-      const curReplace = replaces[i];
-      if (i === 0) {
-        binarySearch = binarySearch.slice(256);
-      } else if (i === replaces.length - 1) {
-        binarySearch = '{{5}}';
-      }
-      if (curReplace.length) {
-        let replace = curReplace[1];
-        if (replace.indexOf('{{') < 0) {
-          replace = '{{' + replace + '}}';
-        }
-        binarySearch = binarySearch.replace(curReplace[0], replace);
-        if (curReplace.length > 2) {
-          binarySearch =
-              binarySearch.replace(curReplace[2], '{%' + curReplace[2] + '%}');
-        }
-      }
-      memo[i] = binarySearch;
+  });
+}
 
+let timer: number;
+let i = 0;
+
+function moveNext() {
+  if (timer) {
+    clearTimeout(timer);
+  }
+  timer = setTimeout(step);
+}
+
+function movePrevious() {
+  i -= 2;
+  i = Math.max(i, 0);
+  if (timer) {
+    clearTimeout(timer);
+  }
+  timer = setTimeout(step);
+}
+
+function getNthSource(j: number) {
+  if (j >= replaces.length) {
+    j = replaces.length - 1;
+  }
+  if (j in memo) {
+    return memo[j];
+  }
+
+  let binarySearch = binarySearchOrig;
+  for (let i = 0; i <= j; i++) {
+    if (i in memo) {
+      binarySearch = memo[i];
       if (i < j) {
         binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
       }
+      continue;
     }
-    return binarySearch;
-  };
-  const step = () => {
-    const spans: HTMLSpanElement[] = [];
-    const srcText = prefix + getNthSource(i);
-    let index = srcText.search(/\{\{|\{[%]/);
-    let start = 0;
-    while (index >= start) {
-      const startStr = srcText.slice(index, index + 2);
-      const endStr = startStr === '{{' ? '}}' : '%}';
-      let span = document.createElement('span');
-      span.textContent = srcText.slice(start, index);
-      spans.push(span);
-      const end = srcText.indexOf(endStr, index + 2);
-      span = document.createElement('span');
-      span.textContent = srcText.slice(index + 2, end);
-      span.classList.add(startStr === '{{' ? 'emphasized' : 'd-def');
-      spans.push(span);
-      start = end + 2;
-      index = srcText.slice(start).search(/\{\{|\{[%]/) + start;
+    const curReplace = replaces[i];
+    if (i === 0) {
+      binarySearch = binarySearch.slice(256);
+    } else if (i === replaces.length - 1) {
+      binarySearch = '{{5}}';
     }
-    const span = document.createElement('span');
-    span.textContent = srcText.slice(start);
+    if (curReplace.length) {
+      let replace = curReplace[1];
+      if (replace.indexOf('{{') < 0) {
+        replace = '{{' + replace + '}}';
+      }
+      binarySearch = binarySearch.replace(curReplace[0], replace);
+      if (curReplace.length > 2) {
+        binarySearch =
+            binarySearch.replace(curReplace[2], '{%' + curReplace[2] + '%}');
+      }
+    }
+    memo[i] = binarySearch;
+
+    if (i < j) {
+      binarySearch = binarySearch.replace(/\{\{|\}\}|\{\%|\%\}/g, '');
+    }
+  }
+  return binarySearch;
+}
+
+function step() {
+  const spans: HTMLSpanElement[] = [];
+  const srcText = prefix + getNthSource(i);
+  let index = srcText.search(/\{\{|\{[%]/);
+  let start = 0;
+  while (index >= start) {
+    const startStr = srcText.slice(index, index + 2);
+    const endStr = startStr === '{{' ? '}}' : '%}';
+    let span = document.createElement('span');
+    span.textContent = srcText.slice(start, index);
     spans.push(span);
-    while (src.firstChild) {
-      src.firstChild.remove();
-    }
+    const end = srcText.indexOf(endStr, index + 2);
+    span = document.createElement('span');
+    span.textContent = srcText.slice(index + 2, end);
+    span.classList.add(startStr === '{{' ? 'emphasized' : 'd-def');
+    spans.push(span);
+    start = end + 2;
+    index = srcText.slice(start).search(/\{\{|\{[%]/) + start;
+  }
+  const span = document.createElement('span');
+  span.textContent = srcText.slice(start);
+  spans.push(span);
+  while (src.firstChild) {
+    src.firstChild.remove();
+  }
+  spans.forEach(element => {
+    src.appendChild(element);
+  });
+
+  setTimeout(() => {
     spans.forEach(element => {
-      src.appendChild(element);
+      if (element.classList.contains('d-def')) {
+        element.classList.remove('d-def');
+        element.classList.add('def');
+      }
     });
+  });
 
-    setTimeout(() => {
-      spans.forEach(element => {
-        if (element.classList.contains('d-def')) {
-          element.classList.remove('d-def');
-          element.classList.add('def');
-        }
-      });
-    });
+  i += 1;
+  if (i < replaces.length) {
+    timer = setTimeout(step, 1500);
+  }
+}
 
-    i += 1;
-    if (i < replaces.length) {
-      timer = setTimeout(step, 1500);
-    }
-  };
-
+function startAnimation() {
+  i = 0;
+  src.textContent = binarySearchOrig;
   if (timer) {
     clearTimeout(timer);
   }
