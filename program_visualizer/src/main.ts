@@ -39,10 +39,10 @@ const replaces = [
   ['8 - 1', '7'],
   ['l <=', '{{0}} <=', 'l = 0'],
   ['<= r', '<= {{7}}', 'r = 7'],
-  ['0 <= 7', 'true'],
+  ['0 <= 7', 'True'],
   [
     `
-    while true:
+    while True:
         mid = (l + r) // 2
         if val == a[mid]:
             return mid
@@ -52,7 +52,7 @@ const replaces = [
             l = mid + 1
 `,
     `
-    while true:
+    while True:
 {{        mid = (l + r) // 2
         if val == a[mid]:
             return mid
@@ -64,7 +64,7 @@ const replaces = [
   ],
   [
     `
-    while true:
+    while True:
         mid = (l + r) // 2
         if val == a[mid]:
             return mid
@@ -91,10 +91,10 @@ const replaces = [
   ['val ==', '{{7}} ==', 'val=7'],
   ['== a[mid]', '== a[{{3}}]', 'mid = 3'],
   ['a[3]', '4', ' 4'],
-  ['7 == 4', 'false'],
+  ['7 == 4', 'False'],
   [
     `
-    if false:
+    if False:
         return mid
     elif val < a[mid]:
         r = mid - 1
@@ -102,7 +102,7 @@ const replaces = [
         l = mid + 1
 `,
     `
-    if false:
+    if False:
         return mid
 {{    elif val < a[mid]:
         r = mid - 1
@@ -112,7 +112,7 @@ const replaces = [
   ],
   [
     `
-    if false:
+    if False:
         return mid
     elif val < a[mid]:
         r = mid - 1
@@ -129,16 +129,16 @@ const replaces = [
   ['val <', '{{7}} <', 'val=7'],
   ['a[mid]', 'a[{{3}}]', 'mid = 3'],
   ['a[3]', '4', ' 4'],
-  ['7 < 4', 'false'],
+  ['7 < 4', 'False'],
   [
     `
-    elif false:
+    elif False:
         r = mid - 1
     else:
         l = mid + 1
 `,
     `
-    elif false:
+    elif False:
         r = mid - 1
     else:
 {{        l = mid + 1
@@ -146,7 +146,7 @@ const replaces = [
   ],
   [
     `
-    elif false:
+    elif False:
         r = mid - 1
     else:
         l = mid + 1
@@ -159,7 +159,8 @@ const replaces = [
   ['3 + 1', '{{4}}'],
   ['    l = 0', '    l = 4'],
   ['3\n\n    l = 4', '3{{}}'],
-  [`3
+  [
+    `3
 
 `,
     `3{{
@@ -177,10 +178,10 @@ const replaces = [
   ],
   ['l <=', '{{4}} <=', 'l = 4'],
   ['<= r', '<= {{7}}', 'r = 7'],
-  ['4 <= 7', 'true'],
+  ['4 <= 7', 'True'],
   [
     `
-    while true:
+    while True:
         mid = (l + r) // 2
         if val == a[mid]:
             return mid
@@ -190,7 +191,7 @@ const replaces = [
             l = mid + 1
 `,
     `
-    while true:
+    while True:
 {{        mid = (l + r) // 2
         if val == a[mid]:
             return mid
@@ -202,7 +203,7 @@ const replaces = [
   ],
   [
     `
-    while true:
+    while True:
         mid = (l + r) // 2
         if val == a[mid]:
             return mid
@@ -231,20 +232,20 @@ const replaces = [
   ['val ==', '{{7}} ==', 'val=7'],
   ['== a[mid]', '== a[{{5}}]', 'mid = 5'],
   ['a[5]', '7', ' 7'],
-  ['7 == 7', 'true'],
+  ['7 == 7', 'True'],
   [
     `
-    if true:
+    if True:
         return mid
 `,
     `
-    if true:
+    if True:
 {{        return mid
 }}`
   ],
   [
     `
-    if true:
+    if True:
         return mid
     elif val < a[mid]:
         r = mid - 1
