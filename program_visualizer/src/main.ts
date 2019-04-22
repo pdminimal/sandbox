@@ -265,9 +265,11 @@ const memo: {[key: number]: string;} = {};
 
 const src = document.getElementById('src')!;
 const startButton = document.getElementById('start');
-if (src && startButton) {
+const stopButton = document.getElementById('stop');
+if (src && startButton && stopButton) {
   src.textContent = binarySearchOrig;
   startButton.addEventListener('click', startAnimation);
+  stopButton.addEventListener('click', stopAnimation);
   document.body.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {
       movePrevious();
@@ -280,20 +282,21 @@ if (src && startButton) {
 let timer: number;
 let i = 0;
 
-function moveNext() {
+function stopAnimation() {
   if (timer) {
     clearTimeout(timer);
   }
+}
+
+function moveNext() {
+  stopAnimation();
   timer = setTimeout(step);
 }
 
 function movePrevious() {
   i -= 2;
   i = Math.max(i, 0);
-  if (timer) {
-    clearTimeout(timer);
-  }
-  timer = setTimeout(step);
+  moveNext();
 }
 
 function getNthSource(j: number) {
