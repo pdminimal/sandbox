@@ -61,4 +61,19 @@ describe('test funcdef', () => {
     }
     expect(interpreter.curFuncDef!.body).toBe('2\n3\n');
   });
+
+  test('end first definition and go to next definition', () => {
+    let interpreter = new Interpreter('def bin(a):\n  1\ndef f2(b):');
+    while (interpreter.lastToken !== 'EOS') {
+      interpreter.step();
+    }
+    expect(interpreter.curFuncDef!.body).toBe('1');
+
+    interpreter = new Interpreter('def bin(a):\n  2\n  3\n');
+    while (interpreter.lastToken !== 'EOS') {
+      interpreter.step();
+    }
+    expect(interpreter.curFuncDef!.body).toBe('2\n3\n');
+  });
+
 });

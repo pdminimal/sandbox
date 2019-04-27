@@ -1,0 +1,43 @@
+{
+  "name": "program_visualizer",
+  "version": "0.0.1",
+  "description": "network",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch --notify .",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
+  },
+  "author": "pdminimal",
+  "license": "0BSD",
+  "bugs": {
+    "url": "https://github.com/pdminimal/sandbox/issues"
+  },
+  "homepage": "https://github.com/pdminimal/sandbox#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "babel-jest": "^24.7.1",
+    "cssnano": "^4.1.10",
+    "gts": "^0.9.0",
+    "jest": "^24.7.1",
+    "sass": "^1.19.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "~3.4.4"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "build",
+      "dist"
+    ]
+  }
+}
