@@ -16,8 +16,26 @@ test('unexpedted end', () => {
 });
 
 test('unexpedted indent', () => {
-  const interpreter = new Interpreter(' a');
+  const interpreter = new Interpreter(' 1');
   interpreter.step();
   interpreter.step();
   expect(() => interpreter.step()).toThrow(/indent/);
+});
+
+test('uindent error', () => {
+  const interpreter = new Interpreter('def f(a):\n  1\n 2');
+  expect(() => {
+    while (interpreter.lastToken !== 'EOS') {
+      interpreter.step();
+    }
+  }).toThrow(/level/);
+});
+
+test('unexpedted token', () => {
+  const interpreter = new Interpreter('def f():2');
+  expect(() => {
+    while (interpreter.lastToken !== 'EOS') {
+      interpreter.step();
+    }
+  }).toThrow(/Unexpected token/);
 });
