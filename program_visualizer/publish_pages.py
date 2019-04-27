@@ -14,7 +14,7 @@ def remove(path):
 
 remove('dist/*')
 
-subprocess.run('parcel build index.html --no-source-maps', shell=True)
+subprocess.run('parcel build src/index.html --no-source-maps', shell=True)
 
 dest = '../docs/program_visualizer/'
 

@@ -36,7 +36,7 @@ const replaces = [
     return -1
 `,
   ],
-  ['len(a)', '8', 'a=[-5, 1, 3, 4, 5, 7, 18, 19]'],
+  ['len(a)', '8', '{%a=[%}-5, 1, 3, 4, 5, 7, 18, 19{%]%}'],
   ['8 - 1', '7'],
   ['l <=', '{{0}} <=', 'l = 0'],
   ['<= r', '<= {{7}}', 'r = 7'],
@@ -91,7 +91,7 @@ const replaces = [
   ['\n    mid = 3', '    mid = 3\n'],
   ['val ==', '{{7}} ==', 'val=7'],
   ['== a[mid]', '== a[{{3}}]', 'mid = 3'],
-  ['a[3]', '4', ' 4'],
+  ['a[3]', '4', '{%a=[%}-5, 1, 3,{% 4%}, 5, 7, 18, 19{%]%}'],
   ['7 == 4', 'False'],
   [
     `
@@ -129,7 +129,7 @@ const replaces = [
   ],
   ['val <', '{{7}} <', 'val=7'],
   ['a[mid]', 'a[{{3}}]', 'mid = 3'],
-  ['a[3]', '4', ' 4'],
+  ['a[3]', '4', '{%a=[%}-5, 1, 3,{% 4%}, 5, 7, 18, 19{%]%}'],
   ['7 < 4', 'False'],
   [
     `
@@ -232,7 +232,7 @@ const replaces = [
   ['    mid = 5\n\n    mid = 5', '    mid = 5\n'],
   ['val ==', '{{7}} ==', 'val=7'],
   ['== a[mid]', '== a[{{5}}]', 'mid = 5'],
-  ['a[5]', '7', ' 7'],
+  ['a[5]', '7', '{%a=[%}-5, 1, 3, 4, 5,{% 7%}, 18, 19{%]%}'],
   ['7 == 7', 'True'],
   [
     `
@@ -331,10 +331,11 @@ function getNthSource(j: number) {
       }
       binarySearch = binarySearch.replace(curReplace[0], replace);
       if (curReplace.length > 2) {
-        binarySearch = binarySearch.replace(
-          curReplace[2],
-          '{%' + curReplace[2] + '%}'
-        );
+        let replace = curReplace[2];
+        if (replace.indexOf('{%') < 0) {
+          replace = '{%' + replace + '%}';
+        }
+        binarySearch = binarySearch.replace(replace.replace(/\{\%|\%\}/g, ''), replace);
       }
     }
     memo[i] = binarySearch;
