@@ -12,6 +12,7 @@ export class Interpreter {
   rules: Rule[];
   precedenceTokens: string[] = [];
   callStack: Rule[][];
+  callStackPath: string[];
   funcDefs: FuncDef[] = [];
   curFuncDef: FuncDef|null = null;
   lastToken: string|undefined;
@@ -26,11 +27,12 @@ export class Interpreter {
 
     this.rules = new AtomExpr(this).readAtomRule();
     this.callStack = [this.rules];
+    this.callStackPath = [];
   }
 
   private popNextToken() {
     if (this.precedenceTokens.length) {
-      return this.precedenceTokens.shift()!;
+      return this.precedenceTokens.pop()!;
     }
     if (this.cursor >= this.src.length) {
       return 'EOS';
@@ -57,6 +59,7 @@ export class Interpreter {
       while (curLength > nextLength) {
         this.indentations.pop();
         curLength = this.getCurrentIndent().length;
+        this.precedenceTokens.push('unindent');
       }
       if (curLength < nextLength) {
         throw new Error('Unindent does not match any outer indentation level.');
@@ -74,17 +77,25 @@ export class Interpreter {
         const childRules = rule[1](nextToken);
         if (childRules === null) {
           this.callStack.pop();
+          this.callStackPath.pop();
         } else if (childRules.length) {
           this.callStack.push(childRules);
+          this.callStackPath.push(nextToken);
         }
         matched = true;
         break;
       }
     }
     if (!matched) {
-      throw new Error(`Unexpected token: ${nextToken}`);
+      this.throwError(`Unexpected token: ${nextToken}`);
     }
     this.lastToken = nextToken;
+  }
+
+  throwError(errorText: string) {
+    console.log(this.callStack);
+    console.log(this.callStackPath);
+    throw new Error(errorText);
   }
 
   toString() {

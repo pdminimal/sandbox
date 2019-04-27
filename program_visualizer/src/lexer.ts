@@ -10,7 +10,7 @@ export class Lex {
   }
 
   pushSymbol() {
-    this.interpreter.precedenceTokens.unshift(this.symbol);
+    this.interpreter.precedenceTokens.push(this.symbol);
     this.symbol = '';
   }
 
@@ -37,8 +37,8 @@ export class Lex {
         [
           /^[^\s]$/,
           nextInput => {
-            this.interpreter.precedenceTokens.unshift(nextInput);
-            this.interpreter.precedenceTokens.unshift('spaces');
+            this.interpreter.precedenceTokens.push(nextInput);
+            this.interpreter.precedenceTokens.push('spaces');
             return null;
           }
         ],

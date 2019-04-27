@@ -13,7 +13,7 @@ export class FuncDef {
   readDefinition(): Rule[] {
     const lexer = this.interpreter.lexer;
     const gotoParent = (token: string) => {
-      this.interpreter.precedenceTokens.unshift(token);
+      this.interpreter.precedenceTokens.push(token);
       return null;
     };
 
@@ -25,8 +25,8 @@ export class FuncDef {
             throw new Error('Unexpected end.');
           }
 
-          this.interpreter.precedenceTokens.unshift('EOS');
-          this.interpreter.precedenceTokens.unshift('endDef');
+          this.interpreter.precedenceTokens.push('EOS');
+          this.interpreter.precedenceTokens.push('endDef');
           return null;
         }
       ],
@@ -67,8 +67,8 @@ export class FuncDef {
       [
         /^[^\s]$/,
         () => {
-          this.interpreter.precedenceTokens.unshift('EOS');
-          this.interpreter.precedenceTokens.unshift('endDef');
+          this.interpreter.precedenceTokens.push('EOS');
+          this.interpreter.precedenceTokens.push('endDef');
           return [];
         }
       ],
