@@ -2,7 +2,7 @@ import {Interpreter} from '../src/interpreter';
 
 
 describe('test atom', () => {
-  test('func call', () => {
+  it('should throw when attempting to call undefined function', () => {
     const interpreter = new Interpreter('test()');
     expect(() => {
       while (interpreter.lastToken !== 'EOS') {
