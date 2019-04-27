@@ -48,22 +48,22 @@ export class Interpreter {
   }
 
   pushIndent() {
-    if (!this.indentations.length) {
+    let curLength = this.getCurrentIndent().length;
+    const nextLength = this.lexer.spaces.length;
+    if (curLength === nextLength) {
+      return;
+    }
+    if (curLength < nextLength) {
       this.indentations.push(this.lexer.spaces);
-    } else {
-      let curLength = this.getCurrentIndent().length;
-      const nextLength = this.lexer.spaces.length;
-      if (curLength < nextLength) {
-        this.indentations.push(this.lexer.spaces);
-      }
-      while (curLength > nextLength) {
-        this.indentations.pop();
-        curLength = this.getCurrentIndent().length;
-        this.precedenceTokens.push('unindent');
-      }
-      if (curLength < nextLength) {
-        throw new Error('Unindent does not match any outer indentation level.');
-      }
+      return;
+    }
+    this.precedenceTokens.push('unindent');
+    while (curLength > nextLength) {
+      this.indentations.pop();
+      curLength = this.getCurrentIndent().length;
+    }
+    if (curLength !== nextLength) {
+      this.throwError(`Unindent does not match any outer indentation level. Next indent length: ${nextLength}`);
     }
   }
 
@@ -93,15 +93,17 @@ export class Interpreter {
   }
 
   throwError(errorText: string) {
-    console.log(this.callStack);
-    console.log(this.callStackPath);
+    console.log(this.toString());
     throw new Error(errorText);
   }
 
   toString() {
+    const indentationLengths = this.indentations.map(e => e.length);
     return JSON.stringify({
       cursor: this.cursor,
       precedenceTokens: this.precedenceTokens,
-    });
+      callStackPath: this.callStackPath,
+      indentationLengths,
+    }, null, 2);
   }
 }

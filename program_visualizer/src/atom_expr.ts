@@ -35,7 +35,7 @@ export class AtomExpr {
       [
         'def',
         () => {
-          const funcDef = new FuncDef(this.interpreter);
+          const funcDef = new FuncDef(this.interpreter, this.interpreter.getCurrentIndent().length);
           this.interpreter.curFuncDef = funcDef;
           return funcDef.readDefinition();
         }

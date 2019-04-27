@@ -5,9 +5,11 @@ export class FuncDef {
   parameters: string[] = [];
   body = '';
   interpreter: Interpreter;
+  indentationLength: number;
 
-  constructor(interpreter: Interpreter) {
+  constructor(interpreter: Interpreter, indentationLength: number) {
     this.interpreter = interpreter;
+    this.indentationLength = indentationLength;
   }
 
   readDefinition(): Rule[] {
@@ -18,6 +20,7 @@ export class FuncDef {
     };
 
     const readBody: Rule[] = [
+      ['endDef', gotoParent],
       [
         'EOS',
         () => {
@@ -34,12 +37,21 @@ export class FuncDef {
         '\n',
         () => {
           return [
-            [/\n|EOS/, gotoParent],
+            [/EOS/, gotoParent],
             [
               'spaces',
               () => {
                 this.interpreter.pushIndent();
                 return [
+                  [
+                    'unindent',
+                    token => {
+                      if (lexer.spaces.length <= this.indentationLength) {
+                        this.interpreter.precedenceTokens.push('endDef');
+                      }
+                      return null;
+                    }
+                  ],
                   [
                     /\n|EOS/,
                     token => {
@@ -61,6 +73,15 @@ export class FuncDef {
               }
             ],
             lexer.readSpacesRule,
+            [
+              /^.$/,
+              nextInput => {
+                lexer.spaces = '';
+                this.interpreter.precedenceTokens.push(nextInput);
+                this.interpreter.precedenceTokens.push('spaces');
+                return [];
+              }
+            ],
           ];
         }
       ],
