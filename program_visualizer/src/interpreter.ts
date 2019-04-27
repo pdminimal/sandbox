@@ -1,8 +1,6 @@
-
-
-import {AtomExpr} from './atom_expr';
-import {FuncDef} from './func_def';
-import {Lex} from './lexer';
+import { AtomExpr } from './atom_expr';
+import { FuncDef } from './func_def';
+import { Lex } from './lexer';
 
 export type Rule = [string | RegExp, (nextInput: string) => Rule[] | null];
 
@@ -14,8 +12,8 @@ export class Interpreter {
   callStack: Rule[][];
   callStackPath: string[];
   funcDefs: FuncDef[] = [];
-  curFuncDef: FuncDef|null = null;
-  lastToken: string|undefined;
+  curFuncDef: FuncDef | null = null;
+  lastToken: string | undefined;
   lexer: Lex;
   indentations: string[] = [];
 
@@ -64,8 +62,8 @@ export class Interpreter {
     }
     if (curLength !== nextLength) {
       this.throwError(
-          `Unindent does not match any outer indentation level. Next indent length: ${
-              nextLength}`);
+        `Unindent does not match any outer indentation level. Next indent length: ${nextLength}`
+      );
     }
   }
 
@@ -73,8 +71,10 @@ export class Interpreter {
     const nextToken = this.popNextToken();
     let matched = false;
     for (const rule of this.callStack[this.callStack.length - 1]) {
-      const match = typeof rule[0] === 'string' ? rule[0] === nextToken :
-                                                  rule[0].test(nextToken);
+      const match =
+        typeof rule[0] === 'string'
+          ? rule[0] === nextToken
+          : rule[0].test(nextToken);
       if (match) {
         const childRules = rule[1](nextToken);
         if (childRules === null) {
@@ -102,12 +102,14 @@ export class Interpreter {
   toString() {
     const indentationLengths = this.indentations.map(e => e.length);
     return JSON.stringify(
-        {
-          cursor: this.cursor,
-          precedenceTokens: this.precedenceTokens,
-          callStackPath: this.callStackPath,
-          indentationLengths,
-        },
-        null, 2);
+      {
+        cursor: this.cursor,
+        precedenceTokens: this.precedenceTokens,
+        callStackPath: this.callStackPath,
+        indentationLengths,
+      },
+      null,
+      2
+    );
   }
 }

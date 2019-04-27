@@ -1,8 +1,8 @@
-import {FuncDef} from './func_def';
-import {Interpreter, Rule} from './interpreter';
+import { FuncDef } from './func_def';
+import { Interpreter, Rule } from './interpreter';
 
 export class AtomExpr {
-  funcDef: FuncDef|null = null;
+  funcDef: FuncDef | null = null;
   argList: string[] = [];
   atom = '';
   interpreter: Interpreter;
@@ -19,15 +19,13 @@ export class AtomExpr {
         for (const funcDef of this.interpreter.funcDefs) {
           if (funcDef.name === this.atom) {
             this.funcDef = funcDef;
-            return [
-
-            ];
+            return [];
           }
         }
         throw new Error(`Name '${this.atom}' is not defined`);
       }
       throw new Error('No symbol');
-    }
+    },
   ];
   readAtomRule(): Rule[] {
     return [
@@ -36,10 +34,12 @@ export class AtomExpr {
         'def',
         () => {
           const funcDef = new FuncDef(
-              this.interpreter, this.interpreter.getCurrentIndent().length);
+            this.interpreter,
+            this.interpreter.getCurrentIndent().length
+          );
           this.interpreter.curFuncDef = funcDef;
           return funcDef.readDefinition();
-        }
+        },
       ],
       this.funcCallRule,
       [
@@ -52,7 +52,7 @@ export class AtomExpr {
             throw new Error('Unexpected indent.');
           }
           return [];
-        }
+        },
       ],
       this.interpreter.lexer.readSpacesRule,
       this.interpreter.lexer.readNameRule,

@@ -1,4 +1,4 @@
-import {Interpreter, Rule} from './interpreter';
+import { Interpreter, Rule } from './interpreter';
 
 export class FuncDef {
   name = '';
@@ -31,7 +31,7 @@ export class FuncDef {
           this.interpreter.precedenceTokens.push('EOS');
           this.interpreter.precedenceTokens.push('endDef');
           return null;
-        }
+        },
       ],
       [
         '\n',
@@ -50,7 +50,7 @@ export class FuncDef {
                         this.interpreter.precedenceTokens.push('endDef');
                       }
                       return null;
-                    }
+                    },
                   ],
                   [
                     /\n|EOS/,
@@ -60,18 +60,17 @@ export class FuncDef {
                         return null;
                       }
                       return gotoParent(token);
-                    }
+                    },
                   ],
                   [
                     /^[^\n]$/,
                     token => {
                       this.body += token;
                       return [];
-                    }
+                    },
                   ],
-
                 ];
-              }
+              },
             ],
             lexer.readSpacesRule,
             [
@@ -82,10 +81,10 @@ export class FuncDef {
                 this.interpreter.precedenceTokens.push(nextInput);
                 this.interpreter.precedenceTokens.push('spaces');
                 return [];
-              }
+              },
             ],
           ];
-        }
+        },
       ],
     ];
 
@@ -115,7 +114,7 @@ export class FuncDef {
                       ':',
                       () => {
                         return readBody;
-                      }
+                      },
                     ],
                     ['spaces', () => []],
                     lexer.readSpacesRule,
@@ -123,15 +122,17 @@ export class FuncDef {
                 } else {
                   return [];
                 }
-              }
+              },
             ],
             ['spaces', () => []],
             lexer.readSpacesRule,
             lexer.readNameRule,
           ];
-        }
+        },
       ],
-      ['spaces', () => []], lexer.readSpacesRule, lexer.readNameRule
+      ['spaces', () => []],
+      lexer.readSpacesRule,
+      lexer.readNameRule,
     ];
   }
 }

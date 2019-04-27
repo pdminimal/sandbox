@@ -1,4 +1,4 @@
-import {Interpreter, Rule} from './interpreter';
+import { Interpreter, Rule } from './interpreter';
 
 export class Lex {
   interpreter: Interpreter;
@@ -28,7 +28,6 @@ export class Lex {
     },
   ];
 
-
   readSpacesRule: Rule = [
     /^\s$/,
     nextToken => {
@@ -40,16 +39,16 @@ export class Lex {
             this.interpreter.precedenceTokens.push(nextInput);
             this.interpreter.precedenceTokens.push('spaces');
             return null;
-          }
+          },
         ],
         [
           /^\s$/,
           nextToken => {
             this.spaces += nextToken;
             return [];
-          }
+          },
         ],
       ];
-    }
+    },
   ];
 }

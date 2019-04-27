@@ -19,7 +19,8 @@ binary_search([-5, 1, 3, 4, 5, 7, 18, 19], 7)`;
 
 const replaces = [
   [
-    '[-5, 1, 3, 4, 5, 7, 18, 19], 7)', `a=[-5, 1, 3, 4, 5, 7, 18, 19], val=7):
+    '[-5, 1, 3, 4, 5, 7, 18, 19], 7)',
+    `a=[-5, 1, 3, 4, 5, 7, 18, 19], val=7):
     l = 0
     r = len(a) - 1
 
@@ -33,7 +34,7 @@ const replaces = [
             l = mid + 1
 
     return -1
-`
+`,
   ],
   ['len(a)', '8', 'a=[-5, 1, 3, 4, 5, 7, 18, 19]'],
   ['8 - 1', '7'],
@@ -60,7 +61,7 @@ const replaces = [
             r = mid - 1
         else:
             l = mid + 1
-}}`
+}}`,
   ],
   [
     `
@@ -81,7 +82,7 @@ const replaces = [
         r = mid - 1
     else:
         l = mid + 1
-`
+`,
   ],
   ['l + r', '{{0}} + r', 'l = 0'],
   ['0 + r', '0 + {{7}}', 'r = 7'],
@@ -108,7 +109,7 @@ const replaces = [
         r = mid - 1
     else:
         l = mid + 1
-}}`
+}}`,
   ],
   [
     `
@@ -124,7 +125,7 @@ const replaces = [
         r = mid - 1
     else:
         l = mid + 1
-`
+`,
   ],
   ['val <', '{{7}} <', 'val=7'],
   ['a[mid]', 'a[{{3}}]', 'mid = 3'],
@@ -142,7 +143,7 @@ const replaces = [
         r = mid - 1
     else:
 {{        l = mid + 1
-}}`
+}}`,
   ],
   [
     `
@@ -153,7 +154,7 @@ const replaces = [
 `,
     `
     l = mid + 1
-`
+`,
   ],
   ['mid + 1', '{{3}} + 1', 'mid = 3'],
   ['3 + 1', '{{4}}'],
@@ -174,7 +175,7 @@ const replaces = [
         else:
             l = mid + 1
 }}
-`
+`,
   ],
   ['l <=', '{{4}} <=', 'l = 4'],
   ['<= r', '<= {{7}}', 'r = 7'],
@@ -199,7 +200,7 @@ const replaces = [
             r = mid - 1
         else:
             l = mid + 1
-}}`
+}}`,
   ],
   [
     `
@@ -220,7 +221,7 @@ const replaces = [
         r = mid - 1
     else:
         l = mid + 1
-`
+`,
   ],
 
   ['l + r', '{{4}} + r', 'l = 4'],
@@ -241,7 +242,7 @@ const replaces = [
     `
     if True:
 {{        return mid
-}}`
+}}`,
   ],
   [
     `
@@ -254,14 +255,14 @@ const replaces = [
 `,
     `
     return mid
-`
+`,
   ],
   ['return mid', 'return {{5}}', 'mid = 5'],
   [],
 ];
 
 const prefix = binarySearchOrig.slice(0, 256);
-const memo: {[key: number]: string;} = {};
+const memo: { [key: number]: string } = {};
 
 const src = document.getElementById('src')!;
 const startButton = document.getElementById('start');
@@ -270,7 +271,7 @@ if (src && startButton && stopButton) {
   src.textContent = binarySearchOrig;
   startButton.addEventListener('click', startAnimation);
   stopButton.addEventListener('click', stopAnimation);
-  document.body.addEventListener('keydown', (event) => {
+  document.body.addEventListener('keydown', event => {
     if (event.key === 'ArrowLeft') {
       movePrevious();
     } else if (event.key === 'ArrowRight') {
@@ -330,8 +331,10 @@ function getNthSource(j: number) {
       }
       binarySearch = binarySearch.replace(curReplace[0], replace);
       if (curReplace.length > 2) {
-        binarySearch =
-            binarySearch.replace(curReplace[2], '{%' + curReplace[2] + '%}');
+        binarySearch = binarySearch.replace(
+          curReplace[2],
+          '{%' + curReplace[2] + '%}'
+        );
       }
     }
     memo[i] = binarySearch;
