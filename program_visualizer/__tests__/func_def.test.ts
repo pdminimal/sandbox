@@ -75,5 +75,4 @@ describe('test funcdef', () => {
     }
     expect(interpreter.curFuncDef!.body).toBe('2\n3\n');
   });
-
 });

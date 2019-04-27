@@ -63,7 +63,9 @@ export class Interpreter {
       curLength = this.getCurrentIndent().length;
     }
     if (curLength !== nextLength) {
-      this.throwError(`Unindent does not match any outer indentation level. Next indent length: ${nextLength}`);
+      this.throwError(
+          `Unindent does not match any outer indentation level. Next indent length: ${
+              nextLength}`);
     }
   }
 
@@ -99,11 +101,13 @@ export class Interpreter {
 
   toString() {
     const indentationLengths = this.indentations.map(e => e.length);
-    return JSON.stringify({
-      cursor: this.cursor,
-      precedenceTokens: this.precedenceTokens,
-      callStackPath: this.callStackPath,
-      indentationLengths,
-    }, null, 2);
+    return JSON.stringify(
+        {
+          cursor: this.cursor,
+          precedenceTokens: this.precedenceTokens,
+          callStackPath: this.callStackPath,
+          indentationLengths,
+        },
+        null, 2);
   }
 }
