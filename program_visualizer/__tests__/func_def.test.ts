@@ -1,7 +1,7 @@
 import {Interpreter} from '../src/interpreter';
 
 describe('test funcdef', () => {
-  test('funcname', () => {
+  it('should read funcname', () => {
     const interpreter = new Interpreter('def bin(');
     while (interpreter.src[interpreter.cursor] !== '(') {
       interpreter.step();
@@ -10,7 +10,7 @@ describe('test funcdef', () => {
     expect(interpreter.curFuncDef!.name).toBe('bin');
   });
 
-  test('empty funcname', () => {
+  it('should throw if funcname is empty', () => {
     const interpreter = new Interpreter('def (');
     expect(() => {
       while (interpreter.lastToken !== 'EOS') {
@@ -19,7 +19,7 @@ describe('test funcdef', () => {
     }).toThrow(/name/);
   });
 
-  test('read many spaces between def and funcname', () => {
+  it('should read many spaces between def and funcname', () => {
     const interpreter = new Interpreter('def  bin(');
     while (interpreter.src[interpreter.cursor] !== '(') {
       interpreter.step();
@@ -28,7 +28,7 @@ describe('test funcdef', () => {
     expect(interpreter.curFuncDef!.name).toBe('bin');
   });
 
-  test('parameters', () => {
+  it('should read parameters', () => {
     const readUntilEnd = (src: string) => {
       const interpreter = new Interpreter(src);
       while (interpreter.src[interpreter.cursor] !== ':') {
@@ -48,7 +48,7 @@ describe('test funcdef', () => {
     expect(interpreter.curFuncDef!.parameters).toEqual(['ab', 'bcd']);
   });
 
-  test('body', () => {
+  it('should read body', () => {
     let interpreter = new Interpreter('def bin(a):\n  1');
     while (interpreter.lastToken !== 'EOS') {
       interpreter.step();
@@ -62,7 +62,7 @@ describe('test funcdef', () => {
     expect(interpreter.curFuncDef!.body).toBe('2\n3\n');
   });
 
-  test('end first definition and go to next definition', () => {
+  it('should end first definition and read next definition', () => {
     let interpreter = new Interpreter('def bin(a):\n  1\ndef f2(b):\n1');
     while (interpreter.lastToken !== 'EOS') {
       interpreter.step();
