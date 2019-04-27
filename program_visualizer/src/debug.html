@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="debug.scss">
+  <title>Debug</title>
+</head>
+<body>
+  <button id="next">next</button>
+  <div id="src-area">
+      <textarea id="src" rows=10></textarea>
+      <div id="cursor"></div>
+  </div>
+  <h3>Interpreter</h3>
+  <ul>
+    <li>lastToken: <span id="last-token"></span></li>
+    <li>precedenceTokens: <span id="precedence-tokens"></span></li>
+    <li>indentations: <span id="indentations"></span></li>
+    <li>callStackPath: <span id="callstack-path"></span></li>
+  </ul>
+  <h3>Lexer</h3>
+  <ul>
+    <li>symbol: <span id="symbol"></span></li>
+  </ul>
+  <ul id="callstack"></ul>
+  <script src="debug.ts"></script>
+</body>
+</html>

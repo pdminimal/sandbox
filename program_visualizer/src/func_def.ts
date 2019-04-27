@@ -37,7 +37,7 @@ export class FuncDef {
         '\n',
         () => {
           return [
-            [/EOS/, gotoParent],
+            [/EOS|endDef/, gotoParent],
             [
               'spaces',
               () => {
@@ -57,6 +57,7 @@ export class FuncDef {
                     token => {
                       if (token === '\n') {
                         this.body += '\n';
+                        return null;
                       }
                       return gotoParent(token);
                     }
@@ -77,6 +78,7 @@ export class FuncDef {
               /^.$/,
               nextInput => {
                 lexer.spaces = '';
+                lexer.symbol = '';
                 this.interpreter.precedenceTokens.push(nextInput);
                 this.interpreter.precedenceTokens.push('spaces');
                 return [];
@@ -85,16 +87,6 @@ export class FuncDef {
           ];
         }
       ],
-      [
-        /^[^\s]$/,
-        () => {
-          this.interpreter.precedenceTokens.push('EOS');
-          this.interpreter.precedenceTokens.push('endDef');
-          return [];
-        }
-      ],
-      ['spaces', () => []],
-      lexer.readSpacesRule,
     ];
 
     return [
