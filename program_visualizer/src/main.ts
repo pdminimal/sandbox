@@ -409,14 +409,14 @@ function step() {
   i += 1;
   if (i < replaces.length && started) {
     timer = setTimeout(step, 1500);
-  } else {
-    stopAnimation();
+  } else if (startButton) {
+    started = false;
+    startButton.textContent = 'START(S KEY)';
   }
 }
 
 function startAnimation() {
-  started = true;
-  if (i >= replaces.length) {
+  if (i >= replaces.length - 1) {
     i = 0;
     src.textContent = binarySearchOrig;
   }
