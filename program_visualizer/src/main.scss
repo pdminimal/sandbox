@@ -2,13 +2,13 @@ body {
     padding: 1rem;
 }
 
-#start, #stop {
+#start, #prev, #next {
     margin: 0.5rem 0;
     height: 1.5rem;
 }
 
 #src {
-  white-space: pre-wrap;
+  white-space: pre;
   font-family: "Roboto mono", Menlo, "Courier New", monospace;
   .def {
     color: #db4437;

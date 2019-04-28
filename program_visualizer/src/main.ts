@@ -263,27 +263,42 @@ const replaces = [
 
 const prefix = binarySearchOrig.slice(0, 256);
 const memo: { [key: number]: string } = {};
+let started = false;
 
 const src = document.getElementById('src')!;
 const startButton = document.getElementById('start');
-const stopButton = document.getElementById('stop');
-if (src && startButton && stopButton) {
+const prevButton = document.getElementById('prev');
+const nextButton = document.getElementById('next');
+if (src && startButton) {
   src.textContent = binarySearchOrig;
-  startButton.addEventListener('click', startAnimation);
-  stopButton.addEventListener('click', stopAnimation);
+  startButton.addEventListener('click', toggleAnimation);
+  prevButton!.addEventListener('click', movePrevious);
+  nextButton!.addEventListener('click', moveNext);
   document.body.addEventListener('keydown', event => {
     if (event.key === 'ArrowLeft') {
       movePrevious();
     } else if (event.key === 'ArrowRight') {
       moveNext();
-    } else if (event.key === ' ') {
-      stopAnimation();
+    } else if (event.key === 's') {
+      toggleAnimation();
     }
   });
 }
 
 let timer: number;
 let i = 0;
+
+function toggleAnimation() {
+  if (started && startButton) {
+    started = false;
+    stopAnimation();
+    startButton.textContent = 'START(S KEY)';
+  } else if (startButton) {
+    started = true;
+    startAnimation();
+    startButton.textContent = 'STOP(S KEY)';
+  }
+}
 
 function stopAnimation() {
   i = Math.min(i, replaces.length - 1);
@@ -294,6 +309,9 @@ function stopAnimation() {
 
 function moveNext() {
   stopAnimation();
+  if (startButton && started) {
+    startButton.textContent = 'STOP(S KEY)';
+  }
   timer = setTimeout(step);
 }
 
@@ -389,12 +407,15 @@ function step() {
   });
 
   i += 1;
-  if (i < replaces.length) {
+  if (i < replaces.length && started) {
     timer = setTimeout(step, 1500);
+  } else {
+    stopAnimation();
   }
 }
 
 function startAnimation() {
+  started = true;
   if (i >= replaces.length) {
     i = 0;
     src.textContent = binarySearchOrig;
