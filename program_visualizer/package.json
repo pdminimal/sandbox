@@ -43,5 +43,6 @@
   "dependencies": {
     "browserslist": "^4.5.5",
     "caniuse-lite": "^1.0.30000963"
-  }
+  },
+  "private": true
 }

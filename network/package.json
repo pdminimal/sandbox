@@ -1,5 +1,5 @@
 {
-  "name": "program_visualizer",
+  "name": "network",
   "version": "0.0.1",
   "description": "network",
   "main": "index.js",
@@ -39,5 +39,6 @@
       "build",
       "dist"
     ]
-  }
+  },
+  "private": true
 }

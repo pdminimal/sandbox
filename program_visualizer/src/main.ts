@@ -277,7 +277,7 @@ if (src && playOrPauseButton) {
       movePrevious();
     } else if (event.key === 'ArrowRight') {
       moveNext();
-    } else if (event.key === 's') {
+    } else if (event.key === 'p') {
       toggleAnimation();
     }
   });
@@ -290,11 +290,11 @@ function toggleAnimation() {
   if (playing && playOrPauseButton) {
     playing = false;
     pauseAnimation();
-    playOrPauseButton.textContent = 'START(S KEY)';
+    playOrPauseButton.textContent = 'PLAY(P KEY)';
   } else if (playOrPauseButton) {
     playing = true;
     playAnimation();
-    playOrPauseButton.textContent = 'STOP(S KEY)';
+    playOrPauseButton.textContent = 'PAUSE(P KEY)';
   }
 }
 
@@ -308,7 +308,7 @@ function pauseAnimation() {
 function moveNext() {
   pauseAnimation();
   if (playOrPauseButton && playing) {
-    playOrPauseButton.textContent = 'STOP(S KEY)';
+    playOrPauseButton.textContent = 'PAUSE(P KEY)';
   }
   timer = setTimeout(step);
 }
@@ -409,7 +409,7 @@ function step() {
     timer = setTimeout(step, 1500);
   } else if (playOrPauseButton) {
     playing = false;
-    playOrPauseButton.textContent = 'START(S KEY)';
+    playOrPauseButton.textContent = 'PLAY(S KEY)';
   }
 }
 
