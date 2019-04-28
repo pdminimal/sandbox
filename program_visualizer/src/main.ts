@@ -1,5 +1,3 @@
-// import {Interpreter} from '../interpreter';
-
 const binarySearchOrig = `def binary_search(a, val):
     l = 0
     r = len(a) - 1
@@ -263,15 +261,15 @@ const replaces = [
 
 const prefix = binarySearchOrig.slice(0, 256);
 const memo: { [key: number]: string } = {};
-let started = false;
+let playing = false;
 
 const src = document.getElementById('src')!;
-const startButton = document.getElementById('start');
+const playOrPauseButton = document.getElementById('play');
 const prevButton = document.getElementById('prev');
 const nextButton = document.getElementById('next');
-if (src && startButton) {
+if (src && playOrPauseButton) {
   src.textContent = binarySearchOrig;
-  startButton.addEventListener('click', toggleAnimation);
+  playOrPauseButton.addEventListener('click', toggleAnimation);
   prevButton!.addEventListener('click', movePrevious);
   nextButton!.addEventListener('click', moveNext);
   document.body.addEventListener('keydown', event => {
@@ -289,18 +287,18 @@ let timer: number;
 let i = 0;
 
 function toggleAnimation() {
-  if (started && startButton) {
-    started = false;
-    stopAnimation();
-    startButton.textContent = 'START(S KEY)';
-  } else if (startButton) {
-    started = true;
-    startAnimation();
-    startButton.textContent = 'STOP(S KEY)';
+  if (playing && playOrPauseButton) {
+    playing = false;
+    pauseAnimation();
+    playOrPauseButton.textContent = 'START(S KEY)';
+  } else if (playOrPauseButton) {
+    playing = true;
+    playAnimation();
+    playOrPauseButton.textContent = 'STOP(S KEY)';
   }
 }
 
-function stopAnimation() {
+function pauseAnimation() {
   i = Math.min(i, replaces.length - 1);
   if (timer) {
     clearTimeout(timer);
@@ -308,9 +306,9 @@ function stopAnimation() {
 }
 
 function moveNext() {
-  stopAnimation();
-  if (startButton && started) {
-    startButton.textContent = 'STOP(S KEY)';
+  pauseAnimation();
+  if (playOrPauseButton && playing) {
+    playOrPauseButton.textContent = 'STOP(S KEY)';
   }
   timer = setTimeout(step);
 }
@@ -407,15 +405,15 @@ function step() {
   });
 
   i += 1;
-  if (i < replaces.length && started) {
+  if (i < replaces.length && playing) {
     timer = setTimeout(step, 1500);
-  } else if (startButton) {
-    started = false;
-    startButton.textContent = 'START(S KEY)';
+  } else if (playOrPauseButton) {
+    playing = false;
+    playOrPauseButton.textContent = 'START(S KEY)';
   }
 }
 
-function startAnimation() {
+function playAnimation() {
   if (i >= replaces.length - 1) {
     i = 0;
     src.textContent = binarySearchOrig;
