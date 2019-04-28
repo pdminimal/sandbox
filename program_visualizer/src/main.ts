@@ -335,7 +335,10 @@ function getNthSource(j: number) {
         if (replace.indexOf('{%') < 0) {
           replace = '{%' + replace + '%}';
         }
-        binarySearch = binarySearch.replace(replace.replace(/\{\%|\%\}/g, ''), replace);
+        binarySearch = binarySearch.replace(
+          replace.replace(/\{\%|\%\}/g, ''),
+          replace
+        );
       }
     }
     memo[i] = binarySearch;

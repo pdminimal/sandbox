@@ -1,4 +1,4 @@
-import { Interpreter } from '../src/interpreter';
+import { Interpreter } from '../interpreter';
 
 it('should initialize interpreter', () => {
   const interpreter = new Interpreter('test');

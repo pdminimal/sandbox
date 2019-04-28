@@ -1,4 +1,4 @@
-import { Interpreter } from '../src/interpreter';
+import { Interpreter } from '../interpreter';
 
 describe('test funcdef', () => {
   it('should read funcname', () => {

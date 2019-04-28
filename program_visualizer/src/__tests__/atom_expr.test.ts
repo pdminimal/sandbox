@@ -1,4 +1,4 @@
-import { Interpreter } from '../src/interpreter';
+import { Interpreter } from '../interpreter';
 
 describe('test atom', () => {
   it('should throw when attempting to call undefined function', () => {
