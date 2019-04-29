@@ -162,7 +162,7 @@ var puppeteer = require("puppeteer");
                             if (child.tagName) {
                                 var styles = window.getComputedStyle(child, null);
                                 for (var i = 0; i < styles.length; i++) {
-                                    var style = styles[i];
+                                    var style = styles[i] || '';
                                     for (var _i = 0, CSS_PROPERTIES_1 = CSS_PROPERTIES; _i < CSS_PROPERTIES_1.length; _i++) {
                                         var property = CSS_PROPERTIES_1[_i];
                                         if (style.startsWith(property)) {
@@ -182,12 +182,12 @@ var puppeteer = require("puppeteer");
                                                     }
                                                     tmpParent = tmpParent.parent;
                                                 }
-                                                if (!tmpParent || tmpParent.styles[style] !== styles[style]) {
-                                                    ret.styles[style] = styles[style];
+                                                if (!tmpParent || tmpParent.styles[style] !== styles.getPropertyValue(style)) {
+                                                    ret.styles[style] = styles.getPropertyValue(style);
                                                 }
                                             }
                                             else {
-                                                ret.styles[style] = styles[style];
+                                                ret.styles[style] = styles.getPropertyValue(style);
                                             }
                                             break;
                                         }
@@ -195,9 +195,12 @@ var puppeteer = require("puppeteer");
                                 }
                                 var attrs = child.attributes;
                                 for (var i = 0; i < attrs.length; i++) {
-                                    var attr = attrs[i].name;
+                                    var attrName = attrs[i].name;
                                     var value = attrs[i].value;
-                                    if (attr === 'src' || attr === 'href') {
+                                    if (['id', 'class'].includes(attrName)) {
+                                        continue;
+                                    }
+                                    if (attrName === 'src' || attrName === 'href') {
                                         if (value.startsWith('//')) {
                                             value = 'https:' + value;
                                         }
@@ -205,11 +208,11 @@ var puppeteer = require("puppeteer");
                                             value = "https://" + location.hostname + value;
                                         }
                                     }
-                                    ret.attributes[attr] = value;
+                                    ret.attributes[attrName] = value;
                                 }
                             }
                             else if (child.nodeType === 3) {
-                                ret.text = child.textContent;
+                                ret.text = child.textContent || '';
                             }
                             parentTag.children.push(ret);
                             return ret;

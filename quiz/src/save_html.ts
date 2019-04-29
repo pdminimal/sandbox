@@ -83,7 +83,7 @@ import * as puppeteer from 'puppeteer';
         const attributes = attrs.length ? ' ' + attrs.join(' ') : '';
         const openTag = `<${this.name}${attributes}${styleAttr}>`;
         const closeTag = `</${this.name}>`;
-        const contents = [];
+        const contents: string[] = [];
         this.children.forEach(child => {
           if (child.name) {
             if (!['script', 'style'].includes(child.name)) {
@@ -116,7 +116,7 @@ import * as puppeteer from 'puppeteer';
       if (child.tagName) {
         const styles = window.getComputedStyle(child, null);
         for (let i = 0; i < styles.length; i++) {
-          const style = styles[i];
+          const style = styles[i] || '';
           for (const property of CSS_PROPERTIES) {
             if (style.startsWith(property)) {
               let inherit = false;
@@ -127,18 +127,18 @@ import * as puppeteer from 'puppeteer';
                 }
               }
               if (inherit) {
-                let tmpParent = parentTag;
+                let tmpParent: TagComponent|null = parentTag;
                 while (tmpParent) {
                   if (tmpParent.styles[style]) {
                     break;
                   }
                   tmpParent = tmpParent.parent;
                 }
-                if (!tmpParent || tmpParent.styles[style] !== styles[style]) {
-                  ret.styles[style] = styles[style];
+                if (!tmpParent || tmpParent.styles[style] !== styles.getPropertyValue(style)) {
+                  ret.styles[style] = styles.getPropertyValue(style);
                 }
               } else {
-                ret.styles[style] = styles[style];
+                ret.styles[style] = styles.getPropertyValue(style);
               }
 
 
@@ -148,19 +148,22 @@ import * as puppeteer from 'puppeteer';
         }
         const attrs = child.attributes;
         for (let i = 0; i < attrs.length; i++) {
-          const attr = attrs[i].name;
+          const attrName = attrs[i].name;
           let value = attrs[i].value;
-          if (attr === 'src' || attr === 'href') {
+          if (['id', 'class'].includes(attrName)) {
+            continue;
+          }
+          if (attrName === 'src' || attrName === 'href') {
             if (value.startsWith('//')) {
               value = 'https:' + value;
             } else if (value.startsWith('/')) {
               value = `https://${location.hostname}` + value;
             }
           }
-          ret.attributes[attr] = value;
+          ret.attributes[attrName] = value;
         }
       } else if (child.nodeType === 3) {
-        ret.text = child.textContent;
+        ret.text = child.textContent || '';
       }
       parentTag.children.push(ret);
       return ret;
