@@ -1,9 +1,9 @@
 import * as puppeteer from 'puppeteer';
 
 (async () => {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
-  await page.setViewport({width: 1440, height: 749});
+  await page.setViewport({ width: 1440, height: 749 });
   const args = process.argv.slice(2);
   await page.goto(args[0]);
 
@@ -40,17 +40,22 @@ import * as puppeteer from 'puppeteer';
       'visibility',
       'white-space',
       'width',
-      'z-index'
+      'z-index',
     ];
-    const INHERITED_PROPERTIES =
-        ['color', 'font-', 'letter-', 'list-style', 'text-align'];
+    const INHERITED_PROPERTIES = [
+      'color',
+      'font-',
+      'letter-',
+      'list-style',
+      'text-align',
+    ];
     class TagComponent {
       children: TagComponent[] = [];
       name = '';
       text = '';
-      parent: TagComponent|null;
-      styles: {[x: string]: string;} = {};
-      attributes: {[x: string]: string;} = {};
+      parent: TagComponent | null;
+      styles: { [x: string]: string } = {};
+      attributes: { [x: string]: string } = {};
       constructor(name: string, parent = null) {
         this.name = name ? name.toLowerCase() : name;
         this.parent = parent;
@@ -62,7 +67,7 @@ import * as puppeteer from 'puppeteer';
         for (let i = 0; i < attrsKeys.length; i += 1) {
           const attr = attrsKeys[i];
           if (this.attributes[attr] != null) {
-            const attrValue = this.attributes[attr].replace(/"/g, '\'');
+            const attrValue = this.attributes[attr].replace(/"/g, "'");
             if (attr !== 'style' && attr !== 'srcset') {
               attrs.push(`${attr}="${attrValue}"`);
             }
@@ -73,7 +78,7 @@ import * as puppeteer from 'puppeteer';
         for (let i = 0; i < styleKeys.length; i += 1) {
           const style = styleKeys[i];
           if (this.styles[style] != null) {
-            const styleValue = this.styles[style].replace(/"/g, '\'');
+            const styleValue = this.styles[style].replace(/"/g, "'");
             if (styleValue) {
               styles.push(`${style}:${styleValue};`);
             }
@@ -127,20 +132,22 @@ import * as puppeteer from 'puppeteer';
                 }
               }
               if (inherit) {
-                let tmpParent: TagComponent|null = parentTag;
+                let tmpParent: TagComponent | null = parentTag;
                 while (tmpParent) {
                   if (tmpParent.styles[style]) {
                     break;
                   }
                   tmpParent = tmpParent.parent;
                 }
-                if (!tmpParent || tmpParent.styles[style] !== styles.getPropertyValue(style)) {
+                if (
+                  !tmpParent ||
+                  tmpParent.styles[style] !== styles.getPropertyValue(style)
+                ) {
                   ret.styles[style] = styles.getPropertyValue(style);
                 }
               } else {
                 ret.styles[style] = styles.getPropertyValue(style);
               }
-
 
               break;
             }
