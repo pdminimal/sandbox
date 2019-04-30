@@ -5,7 +5,7 @@ jest.useFakeTimers();
 describe('test main', () => {
   document.body.innerHTML = `
   <textarea id="src"></textarea>
-  <span id="score"><span id="good"></span> / <span id="total"></span></span>
+  <span id="score"><span class="good"></span> / <span class="total"></span></span>
   <div id="question"></div>
   `;
 
@@ -60,6 +60,7 @@ describe('test main', () => {
     expect(
       (questionDom.firstChild! as HTMLSpanElement).classList.contains('cursor')
     ).toBeTruthy();
+
     _keypress('s');
     expect(
       (questionDom.firstChild! as HTMLSpanElement).classList.contains('cursor')
@@ -68,5 +69,9 @@ describe('test main', () => {
       (questionDom.firstChild!.nextSibling!
         .nextSibling as HTMLSpanElement).classList.contains('cursor')
     ).toBeTruthy();
+
+    _keypress('s');
+    expect(document.querySelector('#score .good')!.textContent).toBe('1');
+
   });
 });
