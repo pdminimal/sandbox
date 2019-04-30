@@ -12,6 +12,7 @@ describe('test main', () => {
   <span id="status"></span>
   <div id="question"></div>
   `;
+  main();
 
   function _event(eventName: string) {
     const evt = document.createEvent('HTMLEvents');
@@ -45,7 +46,6 @@ describe('test main', () => {
   }
 
   it('should show dom when textarea changed', () => {
-    main();
     _change('test string');
     const questionDom = document.getElementById('question')!;
     expect(questionDom.textContent).toBe('test string');
@@ -58,7 +58,6 @@ describe('test main', () => {
   });
 
   it('should goto next when key press', () => {
-    main();
     _change('test string');
     const questionDom = document.getElementById('question')!;
     expect(
@@ -80,5 +79,15 @@ describe('test main', () => {
     ).toBeTruthy();
 
     expect(document.querySelector('#score .good')!.textContent).toBe('1');
+  });
+
+  it('should pause when enter key is pressed', () => {
+    _change('test string');
+
+    _keypress('Enter');
+    const questionDom = document.getElementById('status')!;
+    expect(questionDom.textContent).toBe('Pausing');
+    _keypress('Enter');
+    expect(questionDom.textContent).toBe('Playing...');
   });
 });

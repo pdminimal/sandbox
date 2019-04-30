@@ -32,22 +32,27 @@ export function main() {
       span.classList.add('cursor');
       timer = setTimeout(step, INTERVAL);
     } else {
-      timer = 0;
+      pause();
     }
   }
+
+  function pause() {
+    clearTimeout(timer);
+    timer = 0;
+    statusDom.textContent = 'Pausing';
+  }
+
   document.body.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       if (timer) {
-        clearTimeout(timer);
-        timer = 0;
-        statusDom.textContent = 'Pausing';
+        pause();
       } else {
         step();
       }
     } else if (timer && quiz.judge(e.key)) {
       clearTimeout(timer);
       timer = 0;
-      step(e.key);  
+      step(e.key);
     }
   });
   srcDom.addEventListener('change', () => {
