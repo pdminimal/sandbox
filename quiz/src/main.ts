@@ -8,6 +8,8 @@ export function main() {
   const scoreTotalDom = document.querySelector('#score .total')!;
   const scorePercentageDom = document.querySelector('#score .percentage')!;
   const statusDom = document.getElementById('status')!;
+  const cheatDom = document.getElementById('cheat')! as HTMLInputElement;
+
   let good = 0;
   let total = 0;
   let timer: number;
@@ -42,6 +44,19 @@ export function main() {
     statusDom.textContent = 'Pausing';
   }
 
+  cheatDom.addEventListener('change', () => {
+    console.log('change event');
+    [].forEach.call(
+      document.querySelectorAll('.waiting'),
+      (e: HTMLSpanElement) => {
+        if (cheatDom.checked) {
+          e.classList.add('cheat');
+        } else {
+          e.classList.remove('cheat');
+        }
+      }
+    );
+  });
   document.body.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       if (timer) {
@@ -67,6 +82,9 @@ export function main() {
     }
     for (const span of quiz.segmentDoms) {
       span.classList.add('waiting');
+      if (cheatDom.checked) {
+        span.classList.add('cheat');
+      }
     }
 
     quiz.getSegmentDom().classList.add('cursor');

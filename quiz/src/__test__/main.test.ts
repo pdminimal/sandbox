@@ -10,6 +10,7 @@ describe('test main', () => {
     (<span class="percentage"></span>)
   </span>
   <span id="status"></span>
+  <input type="checkbox" id="cheat" name="cheat" checked>
   <div id="question"></div>
   `;
   main();
@@ -89,5 +90,17 @@ describe('test main', () => {
     expect(questionDom.textContent).toBe('Pausing');
     _keypress('Enter');
     expect(questionDom.textContent).toBe('Playing...');
+  });
+
+  it('should remove cheat class when the checkbox was unchecked.', () => {
+    const wordDom = document.querySelector('.waiting')!;
+    expect(wordDom.classList.contains('cheat')).toBeTruthy();
+    const cheatDom = document.getElementById('cheat')! as HTMLInputElement;
+    cheatDom.checked = false;
+    cheatDom.dispatchEvent(_event('change'));
+    expect(wordDom.classList.contains('cheat')).toBeFalsy();
+    cheatDom.checked = true;
+    cheatDom.dispatchEvent(_event('change'));
+    expect(wordDom.classList.contains('cheat')).toBeTruthy();
   });
 });
