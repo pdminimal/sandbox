@@ -68,13 +68,17 @@ describe('test main', () => {
     _keypress('s');
     expect(
       (questionDom.firstChild! as HTMLSpanElement).classList.contains('cursor')
+    ).toBeTruthy();
+
+    _keypress('t');
+    expect(
+      (questionDom.firstChild! as HTMLSpanElement).classList.contains('cursor')
     ).toBeFalsy();
     expect(
       (questionDom.firstChild!.nextSibling!
         .nextSibling as HTMLSpanElement).classList.contains('cursor')
     ).toBeTruthy();
 
-    _keypress('s');
     expect(document.querySelector('#score .good')!.textContent).toBe('1');
   });
 });

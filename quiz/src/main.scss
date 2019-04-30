@@ -7,8 +7,10 @@
   font-family: "Roboto mono", "Courier New", Courier, monospace;
   font-size: 0.9rem;
   white-space: pre-wrap;
+
   .waiting {
     color: transparent;
+    background: #f1f2f4;
     span:nth-child(2) {
       color: rgba(0, 10, 20, 0.4);
     }

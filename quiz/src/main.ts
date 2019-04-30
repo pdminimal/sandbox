@@ -40,14 +40,14 @@ export function main() {
       if (timer) {
         clearTimeout(timer);
         timer = 0;
-        statusDom.textContent = 'Pause';
+        statusDom.textContent = 'Pausing';
       } else {
         step();
       }
-    } else if (timer) {
+    } else if (timer && quiz.judge(e.key)) {
       clearTimeout(timer);
       timer = 0;
-      step(e.key);
+      step(e.key);  
     }
   });
   srcDom.addEventListener('change', () => {
