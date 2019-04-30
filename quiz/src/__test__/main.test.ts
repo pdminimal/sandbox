@@ -5,7 +5,11 @@ jest.useFakeTimers();
 describe('test main', () => {
   document.body.innerHTML = `
   <textarea id="src"></textarea>
-  <span id="score"><span class="good"></span> / <span class="total"></span></span>
+  <span id="score">
+    <span class="good"></span> / <span class="total"></span>
+    (<span class="percentage"></span>)
+  </span>
+  <span id="status"></span>
   <div id="question"></div>
   `;
 
@@ -72,6 +76,5 @@ describe('test main', () => {
 
     _keypress('s');
     expect(document.querySelector('#score .good')!.textContent).toBe('1');
-
   });
 });

@@ -19,4 +19,7 @@
   .wrong {
     background: rgba(219, 68, 55, 0.15);
   }
+  &:focus {
+    outline: none;
+  }
 }
