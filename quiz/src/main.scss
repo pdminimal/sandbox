@@ -1,9 +1,22 @@
 #src {
   color: rgba(0, 0, 0, 0.1);
 }
+
 #question {
   color: #345;
   font-family: "Roboto mono", "Courier New", Courier, monospace;
   font-size: 0.9rem;
   white-space: pre-wrap;
+  .waiting {
+    color: transparent;
+    span:nth-child(2) {
+      color: rgba(0, 10, 20, 0.4);
+    }
+  }
+  .cursor {
+    background: rgba(66, 133, 244, 0.2);
+  }
+  .wrong {
+    background: rgba(219, 68, 55, 0.15);
+  }
 }

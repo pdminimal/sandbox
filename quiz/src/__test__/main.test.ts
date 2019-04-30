@@ -5,15 +5,39 @@ jest.useFakeTimers();
 describe('test main', () => {
   document.body.innerHTML = `
   <textarea id="src"></textarea>
+  <span id="score"><span id="good"></span> / <span id="total"></span></span>
   <div id="question"></div>
   `;
+
+  function _event(eventName: string) {
+    const evt = document.createEvent('HTMLEvents');
+    evt.initEvent(eventName, false, true);
+    return evt;
+  }
+
+  function _keypress(key: string) {
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        bubbles: true,
+        cancelable: true,
+        key,
+        shiftKey: false,
+      })
+    );
+    document.body.dispatchEvent(
+      new KeyboardEvent('keyup', {
+        bubbles: true,
+        cancelable: true,
+        key,
+        shiftKey: false,
+      })
+    );
+  }
 
   function _change(value: string) {
     const srcDom = document.getElementById('src')! as HTMLTextAreaElement;
     srcDom.value = value;
-    const evt = document.createEvent('HTMLEvents');
-    evt.initEvent('change', false, true);
-    srcDom.dispatchEvent(evt);
+    srcDom.dispatchEvent(_event('change'));
   }
 
   it('should show dom when textarea changed', () => {
@@ -27,5 +51,22 @@ describe('test main', () => {
 
     jest.runOnlyPendingTimers();
     expect(setTimeout).toHaveBeenCalled();
+  });
+
+  it('should goto next when key press', () => {
+    main();
+    _change('test string');
+    const questionDom = document.getElementById('question')!;
+    expect(
+      (questionDom.firstChild! as HTMLSpanElement).classList.contains('cursor')
+    ).toBeTruthy();
+    _keypress('s');
+    expect(
+      (questionDom.firstChild! as HTMLSpanElement).classList.contains('cursor')
+    ).toBeFalsy();
+    expect(
+      (questionDom.firstChild!.nextSibling!
+        .nextSibling as HTMLSpanElement).classList.contains('cursor')
+    ).toBeTruthy();
   });
 });
