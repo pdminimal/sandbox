@@ -409,7 +409,7 @@ function step() {
     timer = setTimeout(step, 1500);
   } else if (playOrPauseButton) {
     playing = false;
-    playOrPauseButton.textContent = 'PLAY(S KEY)';
+    playOrPauseButton.textContent = 'PLAY(P KEY)';
   }
 }
 
