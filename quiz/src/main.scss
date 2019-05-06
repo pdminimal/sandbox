@@ -4,26 +4,26 @@
 
 #question {
   color: #345;
-  font-family: "Roboto mono", "Courier New", Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 0.9rem;
   white-space: pre-wrap;
 
   .waiting {
     color: transparent;
-    background: #f1f2f4;
+    background: #f6f7f8;
     span:nth-child(2) {
-      color: rgba(0, 5, 10, 0.4);
+      color: rgba(0, 5, 10, 0.5);
     }
     &.cheat {
-      color: rgba(0, 5, 10, 0.4);
+      color: rgba(0, 5, 10, 0.5);
     }
   }
 
   .cursor {
-    background: rgba(66, 133, 244, 0.2);
+    background: rgba(66, 133, 244, 0.25);
   }
   .wrong {
-    background: rgba(219, 68, 55, 0.15);
+    background: rgba(219, 68, 55, 0.2);
   }
   &:focus {
     outline: none;

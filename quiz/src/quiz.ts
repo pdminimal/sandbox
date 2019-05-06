@@ -23,18 +23,24 @@ export class Quiz {
     const wordsRegex = /[a-z0-9]+/gi;
     let matches = wordsRegex.exec(sentence);
     let prev = 0;
+    let cnt = 0;
     while (matches) {
-      const span = document.createElement('span');
-      this.segmentDoms.push(span);
-
       const end = matches[0].length + matches.index;
-      this.segments.push([matches.index, end]);
+      if (cnt % 2) {
+        const span = document.createElement('span');
+        this.segmentDoms.push(span);  
+        this.segments.push([matches.index, end]);
+        this.doms.push(...this.characterDoms.slice(prev, matches.index));
+        this.doms.push(span);
+        span.append(...this.characterDoms.slice(matches.index, end));
+      } else {
+        this.doms.push(...this.characterDoms.slice(prev, end));
+      }
 
-      this.doms.push(...this.characterDoms.slice(prev, matches.index));
-      this.doms.push(span);
-      span.append(...this.characterDoms.slice(matches.index, end));
+
       prev = end;
       matches = wordsRegex.exec(sentence);
+      cnt += 1
     }
 
     this.doms.push(
