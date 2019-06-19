@@ -27,35 +27,7 @@ export class AtomExpr {
       throw new Error('No symbol');
     },
   ];
-  readAtomRule(): Rule[] {
-    return [
-      ['EOS', () => null],
-      [
-        'def',
-        () => {
-          const funcDef = new FuncDef(
-            this.interpreter,
-            this.interpreter.getCurrentIndent().length
-          );
-          this.interpreter.curFuncDef = funcDef;
-          return funcDef.readDefinition();
-        },
-      ],
-      this.funcCallRule,
-      [
-        'spaces',
-        () => {
-          const lexer = this.interpreter.lexer;
-          if (lexer.symbol) {
-            lexer.pushSymbol();
-          } else {
-            throw new Error('Unexpected indent.');
-          }
-          return [];
-        },
-      ],
-      this.interpreter.lexer.readSpacesRule,
-      this.interpreter.lexer.readNameRule,
-    ];
+  readAtomRule(): Rule {
+    return this.funcCallRule;
   }
 }

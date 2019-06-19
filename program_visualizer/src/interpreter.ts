@@ -23,7 +23,35 @@ export class Interpreter {
     const lexer = new Lex(this);
     this.lexer = lexer;
 
-    this.rules = new AtomExpr(this).readAtomRule();
+    this.rules = [
+      ['EOS', () => null],
+      [
+        'def',
+        () => {
+          const funcDef = new FuncDef(
+            this,
+            this.getCurrentIndent().length
+          );
+          this.curFuncDef = funcDef;
+          return funcDef.readDefinition();
+        },
+      ],
+      new AtomExpr(this).readAtomRule(),
+      [
+        'spaces',
+        () => {
+          const lexer = this.lexer;
+          if (lexer.symbol) {
+            lexer.pushSymbol();
+          } else {
+            throw new Error('Unexpected indent.');
+          }
+          return [];
+        },
+      ],
+      this.lexer.readSpacesRule,
+      this.lexer.readNameRule,
+    ];
     this.callStack = [this.rules];
     this.callStackPath = [];
   }
