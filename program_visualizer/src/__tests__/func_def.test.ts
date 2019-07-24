@@ -63,16 +63,20 @@ describe('test funcdef', () => {
   });
 
   it('should end first definition and read next definition', () => {
-    let interpreter = new Interpreter('def bin(a):\n  1\ndef f2(b):\n1');
+    const interpreter = new Interpreter('def bin(a):\n  1\ndef f2(b):\n1');
     while (interpreter.lastToken !== 'EOS') {
       interpreter.step();
     }
     expect(interpreter.curFuncDef!.body).toBe('1');
-
-    interpreter = new Interpreter('def bin(a):\n  2\n  3\n');
-    while (interpreter.lastToken !== 'EOS') {
-      interpreter.step();
-    }
-    expect(interpreter.curFuncDef!.body).toBe('2\n3\n');
   });
+
+  // it('should end first definition when empty new line', () => {
+  //   const interpreter = new Interpreter('def bin(a):\n  1\n\n');
+  //   while (interpreter.lastToken !== 'EOS') {
+  //     interpreter.step();
+  //   }
+  //   expect(interpreter.curFuncDef!.body).toBe('1\n');
+  //   console.log(interpreter.callStack);
+
+  // });
 });

@@ -39,7 +39,7 @@ export class FuncDef {
           return [
             [/EOS|endDef/, gotoParent],
             [
-              'spaces',
+              /spaces/,
               () => {
                 this.interpreter.pushIndent();
                 return [
