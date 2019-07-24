@@ -8,7 +8,7 @@ Conceptual animation is [here](https://pdminimal.github.io/sandbox/program_visua
 
 ## Text segmentation
 It is an experimental implementation of my unsupervised text segmentation algorithm which doesn't depend on language-specific grammar knowledge.
-It has very similar objectives as [SentensePiece](https://github.com/google/sentencepiece).
+It has very similar objectives as [SentencePiece](https://github.com/google/sentencepiece).
 
 
 ## License
