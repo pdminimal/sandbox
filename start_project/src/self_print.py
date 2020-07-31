@@ -9,15 +9,15 @@ class SelfPrint:
         with open(os.path.realpath(f_back.f_code.co_filename), "r") as file:
             self.lines = file.readlines()
         self.leading = leading
-        self.comments = [
-            no + 1
-            for no, line in enumerate(self.lines)
+        self.comment_indices = [
+            index
+            for index, line in enumerate(self.lines)
             if re.match(r"\s*# " + marker, line)
         ]
 
     def print(self):
         f_back = currentframe().f_back
-        lineno = f_back.f_lineno
-        start = max(c for c in self.comments + [1] if c < lineno)
-        for i in range(start, lineno):
-            print(self.leading + self.lines[i - 1], end="")
+        line_index = f_back.f_lineno - 1
+        start = max(c for c in self.comment_indices + [0] if c < line_index)
+        for i in range(start, line_index):
+            print(self.leading + self.lines[i], end="")
