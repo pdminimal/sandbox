@@ -10,7 +10,8 @@ class TestSelfPrint(unittest.TestCase):
         sp = SelfPrint()
         with patch("sys.stdout", new=StringIO()) as stdout:
             sp.print()
-            expected = """import unittest
+            expected = """\
+import unittest
 from io import StringIO
 from unittest.mock import patch
 
@@ -22,17 +23,19 @@ class TestSelfPrint(unittest.TestCase):
         sp = SelfPrint()
         with patch("sys.stdout", new=StringIO()) as stdout:
 """
-            self.assertEqual(stdout.getvalue(), expected)
+            self.assertEqual(expected, stdout.getvalue())
 
     def test_print(self):
         sp = SelfPrint()
         # - test_print
         with patch("sys.stdout", new=StringIO()) as stdout:
-            sp.print()
-            expected = """        # - test_print
+            sp.print("test")
+            expected = """\
+        # - test_print
         with patch("sys.stdout", new=StringIO()) as stdout:
+test
 """
-            self.assertEqual(stdout.getvalue(), expected)
+            self.assertEqual(expected, stdout.getvalue())
 
     def test_marker(self):
         sp = SelfPrint(marker="@")
@@ -40,21 +43,20 @@ class TestSelfPrint(unittest.TestCase):
         # - default marker
         with patch("sys.stdout", new=StringIO()) as stdout:
             sp.print()
-            expected = """        # @ custom marker
+            expected = """\
+        # @ custom marker
         # - default marker
         with patch("sys.stdout", new=StringIO()) as stdout:
 """
-            self.assertEqual(stdout.getvalue(), expected)
+            self.assertEqual(expected, stdout.getvalue())
 
     def test_leading(self):
         sp = SelfPrint(leading="- ")
         # -
         with patch("sys.stdout", new=StringIO()) as stdout:
             sp.print()
-            expected = """-         # -
+            expected = """\
+-         # -
 -         with patch("sys.stdout", new=StringIO()) as stdout:
 """
-            self.assertEqual(stdout.getvalue(), expected)
-
-if __name__ == "__main__":
-    unittest.main()
+            self.assertEqual(expected, stdout.getvalue())

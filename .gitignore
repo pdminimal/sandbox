@@ -5,12 +5,13 @@ node_modules/
 build/
 dist/
 .coverage
+htmlcov
+coverage.*
 *_env
 
 __pycache__/
 *.py[cod]
 *$py.class
 
-coverage
 corpus.txt
 test.html
