@@ -19,6 +19,10 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 echo export FZF_DEFAULT_COMMAND=\'rg --files --hidden --glob \"\!.git\"\' >> ~/.bashrc
 echo export FZF_DEFAULT_OPTS=\'--height 40% --layout=reverse --border\' >> ~/.bashrc
 
+sudo add-apt-repository ppa:lazygit-team/release
+sudo apt-get update
+sudo apt-get install lazygit
+
 vi ~/.bash_aliases
 ```
 
