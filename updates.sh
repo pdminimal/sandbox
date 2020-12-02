@@ -1,17 +1,14 @@
 #!/bin/bash
 
 sudo npm i -g npm-check-updates
+dirs=(quiz ../program_visualizer ../rapid_reading)
 
-cd quiz
-ncu -u
-npm i
-
-cd ../program_visualizer
-ncu -u
-npm i
-
-cd ../rapid_reading
-ncu -u
-npm i
+for directory in ${dirs[@]}
+do
+  cd ${directory}
+  ncu -u
+  npm i
+  npm audit fix
+done
 
 git commit -am 'Update npm packages'

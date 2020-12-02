@@ -10,7 +10,7 @@
   "license": "0BSD",
   "keywords": [],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest test",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
@@ -20,8 +20,10 @@
     "posttest": "npm run lint"
   },
   "devDependencies": {
+    "@types/node": "^14.14.10",
     "gts": "^3.0.2",
-    "typescript": "^4.0.5",
-    "@types/node": "^14.14.7"
+    "jest": "^26.6.3",
+    "parcel": "^2.0.0-nightly.462",
+    "typescript": "^4.1.2"
   }
 }
