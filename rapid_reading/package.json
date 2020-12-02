@@ -2,10 +2,10 @@
   "name": "",
   "version": "0.0.0",
   "description": "",
-  "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
-    "build/src"
+    "dist/src"
   ],
   "license": "0BSD",
   "keywords": [],
@@ -20,6 +20,7 @@
     "posttest": "npm run lint"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.16",
     "@types/node": "^14.14.10",
     "gts": "^3.0.2",
     "jest": "^26.6.3",
