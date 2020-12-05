@@ -1,7 +1,10 @@
 describe('test', () => {
   beforeEach(() => {});
 
-  test('1', () => {
-    expect(1 + 1).toBe(2);
+  test('test dom', () => {
+    document.body.innerHTML = `
+    <section><h1 id="title">title</h1></section>
+    `;
+    expect(document.getElementById('title')!.textContent).toEqual('title');
   });
 });

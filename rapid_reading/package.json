@@ -10,7 +10,7 @@
   "license": "0BSD",
   "keywords": [],
   "scripts": {
-    "test": "jest test",
+    "test": "jest dist",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
