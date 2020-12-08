@@ -58,6 +58,9 @@ name = 'lang#python'
 
 [[custom_plugins]]
 repo = 'mg979/vim-visual-multi'
+
+[[custom_plugins]]
+repo = 'blindFS/vim-taskwarrior'
 ```
 
 ~/.SpaceVim.d/autoload/myspacevim.vim
