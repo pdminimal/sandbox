@@ -14,10 +14,11 @@
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
+    "parcel": "parcel",
     "fix": "gts fix",
     "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "pretest": "npm run lint",
+    "posttest": "."
   },
   "devDependencies": {
     "@types/jest": "^26.0.16",
