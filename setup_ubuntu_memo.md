@@ -48,19 +48,19 @@ alias ....='cd ../../..'
     enable_vimfiler_gitstatus = true
 
 [[layers]]
-name = 'git'
+name = "git"
 
 [[layers]]
-name = 'fzf'
+name = "fzf"
 
 [[layers]]
-name = 'lang#python'
+name = "leaderf"
+
+[[layers]]
+name = "lang#python"
 
 [[custom_plugins]]
-repo = 'mg979/vim-visual-multi'
-
-[[custom_plugins]]
-repo = 'blindFS/vim-taskwarrior'
+repo = "mg979/vim-visual-multi"
 ```
 
 ~/.SpaceVim.d/autoload/myspacevim.vim
