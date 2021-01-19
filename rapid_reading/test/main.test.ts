@@ -1,10 +1,13 @@
-describe('test', () => {
+import RapidReading from '../src/main';
+
+describe('test RapidReading', () => {
   beforeEach(() => {});
 
-  test('test dom', () => {
+  test('test split dom', () => {
     document.body.innerHTML = `
     <section><h1 id="title">title</h1></section>
     `;
-    expect(document.getElementById('title')!.textContent).toEqual('title');
+    const rr = new RapidReading(document.body);
+    expect(rr.spans.length).toEqual(5);
   });
 });

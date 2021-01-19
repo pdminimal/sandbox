@@ -120,4 +120,6 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 # tools
 sudo apt install -y taskwarrior ranger
+
+sudo sysctl fs.inotify.max_user_watches=81920
 ```
